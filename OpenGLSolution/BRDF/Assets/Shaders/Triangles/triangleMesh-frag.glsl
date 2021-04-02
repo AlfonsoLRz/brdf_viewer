@@ -8,6 +8,7 @@ const float CUTOFF = .8f;
 
 
 // ------------ Geometry ------------
+in vec3 worldPosition;
 in vec3 position;
 in vec3 normal;
 in vec2 textCoord;
@@ -20,8 +21,13 @@ uniform vec3 lightDirection;
 // ----------- Materials ------------
 uniform sampler2D texKadSampler;
 uniform sampler2D texKsSampler;
+uniform vec2  heightBoundaries;
 uniform float materialScattering;				// Substitutes ambient lighting
 uniform float shininess;
+
+// ----------- Texture selection
+subroutine vec4 kadType();
+subroutine uniform kadType kadUniform;
 
 subroutine vec4 semiTransparentType(const vec4 color);
 subroutine uniform semiTransparentType semiTransparentUniform;
@@ -208,9 +214,16 @@ vec3 rimLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, cons
 // ----- Diffuse & specular -----
 
 // Obtains color from diffuse texture
-vec4 getKad()
+subroutine(kadType)
+vec4 getBaseKad()
 {
 	return texture(texKadSampler, textCoord);
+}
+
+subroutine(kadType)
+vec4 getHeightKad()
+{
+	return texture(texKadSampler, vec2(.5f, (worldPosition.y - heightBoundaries.x) / (heightBoundaries.y - heightBoundaries.x)));
 }
 
 // Obtains color from specular texture
@@ -303,7 +316,7 @@ void noShadow(out float shadowDiffuseFactor, out float shadowSpecFactor)
 
 void main()
 {
-	const vec4 fragKad = semiTransparentUniform(getKad());
+	const vec4 fragKad = semiTransparentUniform(kadUniform());
 	const vec4 fragKs = getKs();
 	const vec3 fragNormal = normalize(normal);
 

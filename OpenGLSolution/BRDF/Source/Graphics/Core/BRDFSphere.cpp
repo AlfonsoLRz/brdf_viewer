@@ -48,13 +48,14 @@ void BRDFSphere::renderTriangles(RenderingShader* shader, const RendEnum::RendSh
 
 	if (vao)
 	{
-		shader->setUniform("heightBoundaries", vec2(.0f, 1.0f));
-		
+		shader->setUniform("heightBoundaries", vec2(.0f, 1.0f));	
 		this->setShaderUniforms(shader, shaderType, matrix);
 
 		if (material)
 		{
 			material->applyMaterial(shader);
+			shader->setSubroutineUniform(GL_FRAGMENT_SHADER, "kadUniform", "getHeightKad");
+			shader->applyActiveSubroutines();
 		}
 
 		vao->drawObject(RendEnum::IBO_TRIANGLE_MESH, primitive, GLuint(modelComp->_topologyIndicesLength[RendEnum::IBO_TRIANGLE_MESH]));

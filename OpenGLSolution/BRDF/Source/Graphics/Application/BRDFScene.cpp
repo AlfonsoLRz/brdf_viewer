@@ -366,16 +366,16 @@ void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingPar
 			normalShader->setUniform("materialScattering", rendParams->_materialScattering);
 			normalShader->applyActiveSubroutines();
 
-			_plane->drawAsTriangles(normalShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
+			_sceneGroup->drawAsTriangles(normalShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
 
 			// BRDF shader
-			brdfShader->use();
-			_lights[i]->applyLight(brdfShader, matrix[RendEnum::VIEW_MATRIX]);
-			_lights[i]->applyShadowMapTexture(brdfShader);
-			brdfShader->setUniform("materialScattering", rendParams->_materialScattering);
-			brdfShader->applyActiveSubroutines();
+			//brdfShader->use();
+			//_lights[i]->applyLight(brdfShader, matrix[RendEnum::VIEW_MATRIX]);
+			//_lights[i]->applyShadowMapTexture(brdfShader);
+			//brdfShader->setUniform("materialScattering", rendParams->_materialScattering);
+			//brdfShader->applyActiveSubroutines();
 
-			_brdfSphere->drawAsTriangles(brdfShader, RendEnum::BRDF_SPHERE_SHADER, matrix);
+			//_brdfSphere->drawAsTriangles(brdfShader, RendEnum::BRDF_SPHERE_SHADER, matrix);
 		}
 	}
 

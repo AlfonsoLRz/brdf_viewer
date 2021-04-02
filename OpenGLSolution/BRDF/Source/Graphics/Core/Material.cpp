@@ -32,6 +32,8 @@ void Material::applyMaterial(RenderingShader* shader)
 {
 	if (_texture[Texture::KAD_TEXTURE])
 	{
+		shader->setSubroutineUniform(GL_FRAGMENT_SHADER, "kadUniform", "getBaseKad");
+		
 		_texture[Texture::KAD_TEXTURE]->applyTexture(shader, Texture::KAD_TEXTURE);
 	}
 

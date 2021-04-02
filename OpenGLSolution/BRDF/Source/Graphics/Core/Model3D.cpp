@@ -186,6 +186,7 @@ void Model3D::drawAsTriangles(RenderingShader* shader, const RendEnum::RendShade
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
 		this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
 	}
 }
