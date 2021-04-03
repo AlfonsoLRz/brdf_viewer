@@ -37,9 +37,9 @@ protected:
 
 protected:
 	const static std::unordered_map<Model3D::BRDFType, std::string> BRDF_MODULE_PATH;		//!<
-	const static std::string INCLUDE_BRDF_HEADER;													//!<
-	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;										//!<
-	const static std::string SHADER_BEGIN, SHADER_END;												//!<
+	const static std::string INCLUDE_BRDF_HEADER;											//!<
+	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;								//!<
+	const static std::string SHADER_BEGIN, SHADER_END;										//!<
 
 protected:
 	std::vector<ShaderVariable> _shaderVariables;											//!<

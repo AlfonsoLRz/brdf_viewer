@@ -18,8 +18,8 @@ const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
 BRDFScene::BRDFScene() : _brdfSphere(nullptr), _plane(nullptr)
 {
-	_testShader = new BRDFShader();
-	_testShader->createShaderProgram("Assets/Shaders/Triangles/triangleMesh", Model3D::BRDFType::PHONG);
+	//_testShader = new BRDFShader();
+	//_testShader->createShaderProgram("Assets/Shaders/Triangles/triangleMesh", Model3D::BRDFType::PHONG);
 }
 
 BRDFScene::~BRDFScene()
@@ -134,7 +134,10 @@ void BRDFScene::loadModels()
 
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
-		_sceneGroup->addComponent(_brdfSphere);
+		//_sceneGroup->addComponent(_brdfSphere);
+
+		CADModel* droneModel = new CADModel("Assets/Models/Drone/DJIMatrice300RTK", "Assets/Models/Drone/", true);
+		_sceneGroup->addComponent(droneModel);
 	}
 
 	SSAOScene::loadModels();
