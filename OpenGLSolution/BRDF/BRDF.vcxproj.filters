@@ -510,6 +510,9 @@
     <ClInclude Include="Source\Graphics\Application\BRDFScene.h">
       <Filter>Archivos de encabezado\Graphics\Application</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Core\BRDFShader.h">
+      <Filter>Archivos de encabezado\Graphics\Core\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry\2D\Vector2.cpp">
@@ -727,6 +730,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\Application\BRDFScene.cpp">
       <Filter>Archivos de origen\Graphics\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Core\BRDFShader.cpp">
+      <Filter>Archivos de origen\Graphics\Core\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

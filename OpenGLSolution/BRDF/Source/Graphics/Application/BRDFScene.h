@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Application/SSAOScene.h"
+#include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/BRDFSphere.h"
 #include "Graphics/Core/PlanarSurface.h"
 
@@ -47,6 +48,9 @@ protected:
 	// Models
 	BRDFSphere*		_brdfSphere;				//!<
 	PlanarSurface*	_plane;				//!<
+
+	// Shaders
+	BRDFShader* _testShader;	
 
 protected:
 	/**

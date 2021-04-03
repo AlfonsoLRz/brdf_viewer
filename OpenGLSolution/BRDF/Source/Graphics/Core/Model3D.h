@@ -220,7 +220,7 @@ protected:
 	/**
 	*	@brief  
 	*/
-	void setBRDFUniform(ShaderProgram* shader, const const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent);
+	void setBRDFUniform(ShaderProgram* shader, const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent);
 
 	/**
 	*	@brief Sets the uniform variables for each shader.

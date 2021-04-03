@@ -54,6 +54,7 @@
     <ClInclude Include="Source\Graphics\Application\TextureList.h" />
     <ClInclude Include="Source\Graphics\Core\AmbientLight.h" />
     <ClInclude Include="Source\Graphics\Core\BasicAttenuation.h" />
+    <ClInclude Include="Source\Graphics\Core\BRDFShader.h" />
     <ClInclude Include="Source\Graphics\Core\BRDFSphere.h" />
     <ClInclude Include="Source\Graphics\Core\CADModel.h" />
     <ClInclude Include="Source\Graphics\Core\Camera.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Source\Graphics\Application\TextureList.cpp" />
     <ClCompile Include="Source\Graphics\Core\AmbientLight.cpp" />
     <ClCompile Include="Source\Graphics\Core\BasicAttenuation.cpp" />
+    <ClCompile Include="Source\Graphics\Core\BRDFShader.cpp" />
     <ClCompile Include="Source\Graphics\Core\BRDFSphere.cpp" />
     <ClCompile Include="Source\Graphics\Core\CADModel.cpp" />
     <ClCompile Include="Source\Graphics\Core\Camera.cpp" />

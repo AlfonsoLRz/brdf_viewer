@@ -28,7 +28,8 @@ out vec4 shadowCoord;
 
 // ********* FUNCTIONS ************
 
-subroutine(brdfType)
+INCLUDE BRDF
+/**subroutine(brdfType)
 vec3 useBRDF(vec3 L, vec3 N, vec3 V)
 {
 	vec3 R = reflect(L, N);
@@ -36,7 +37,7 @@ vec3 useBRDF(vec3 L, vec3 N, vec3 V)
 	const float intensity = max(val, 1.0f / 3.14f);
 
 	return N * intensity;
-}
+}*/
 
 subroutine(brdfType)
 vec3 noBRDF(vec3 L, vec3 N, vec3 V)

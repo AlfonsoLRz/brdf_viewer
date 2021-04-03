@@ -18,6 +18,8 @@ const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
 BRDFScene::BRDFScene() : _brdfSphere(nullptr), _plane(nullptr)
 {
+	_testShader = new BRDFShader();
+	_testShader->createShaderProgram("Assets/Shaders/Triangles/triangleMesh", Model3D::BRDFType::PHONG);
 }
 
 BRDFScene::~BRDFScene()
