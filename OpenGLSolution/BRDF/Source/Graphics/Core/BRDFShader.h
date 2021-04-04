@@ -15,17 +15,20 @@
 class BRDFShader: public RenderingShader
 {
 protected:
-	enum ShaderVariableType { BOOLEAN = 0, INTEGER = 1, FLOAT = 2 };
-	
+	enum ShaderVariableType { BOOLEAN = 0, INTEGER = 1, FLOAT = 2, NUM_VARIABLE_TYPES };
+	inline const static std::string VARIABLE_TYPE_NAME[NUM_VARIABLE_TYPES] = { "bool", "int", "float" };
+
+public:
 	struct ShaderVariable
 	{
 		ShaderVariableType	_type;
+		std::string			_name;
 
 		union
 		{
-			bool	_defaultBoolean;
-			int		_defaultInteger;
-			float	_defaultFloat;
+			bool	_booleanValue;
+			int		_integerValue;
+			float	_floatValue;
 		};
 
 		union
@@ -33,16 +36,39 @@ protected:
 			ivec2	_integerRange;
 			vec2	_floatRange;
 		};
+
+		/**
+		*	@return Concatenation of uniform variables to include in a shader. 
+		*/
+		std::string toUniformLine();
+
+		// ----- Getters ------
+
+		/**
+		*	@return True if ... 
+		*/
+		bool isBoolean() { return _type == BOOLEAN; }
+
+		/**
+		*	@return True if ...
+		*/
+		bool isInteger() { return _type == INTEGER; }
+
+		/**
+		*	@return True if ...
+		*/
+		bool isFloat() { return _type == FLOAT; }
 	};
 
 protected:
-	const static std::unordered_map<Model3D::BRDFType, std::string> BRDF_MODULE_PATH;		//!<
-	const static std::string INCLUDE_BRDF_HEADER;											//!<
-	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;								//!<
-	const static std::string SHADER_BEGIN, SHADER_END;										//!<
+	const static std::unordered_map<Model3D::BRDFType, std::string> BRDF_MODULE_PATH;			//!<
+	const static std::string INCLUDE_BRDF_HEADER;												//!<
+	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;									//!<
+	const static std::string SHADER_BEGIN, SHADER_END;											//!<
 
 protected:
-	std::vector<ShaderVariable> _shaderVariables;											//!<
+	static std::unordered_map<Model3D::BRDFType, std::string> _brdfContent;						//!<
+	static std::unordered_map<Model3D::BRDFType, std::vector<ShaderVariable>> _brdfVariables;	//!<
 
 protected:
 	/**
@@ -73,6 +99,11 @@ protected:
 	*/
 	bool includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType brdfType);
 
+	/**
+	*	@brief  
+	*/
+	void joinParameterShader(std::vector<BRDFShader::ShaderVariable>& parameters, const std::string& shaderContent, std::string& result);
+
 public:
 	/**
 	*	@brief Constructor. 
@@ -83,11 +114,20 @@ public:
 	*	@brief Destructor. 
 	*/
 	virtual ~BRDFShader();
+
+	/**
+	*	@brief  
+	*/
+	static void clearCache();
 	
 	/**
 	*	@brief Reads and compiles all the shaders which contain the name specified as an argument.
 	*	@filename filename Shader program name. Example: pointCloud => pointCloud-vert.glsl, pointCloud-frag.glsl...
 	*/
 	virtual GLuint createShaderProgram(const char* filename, Model3D::BRDFType brdf);
-};
 
+	/**
+	*	@brief  
+	*/
+	static std::vector<BRDFShader::ShaderVariable>* getParameters(Model3D::BRDFType brdf);
+};

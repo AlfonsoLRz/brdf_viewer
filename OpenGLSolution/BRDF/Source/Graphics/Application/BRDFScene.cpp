@@ -16,19 +16,61 @@ const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
 // [Public methods]
 
-BRDFScene::BRDFScene() : _brdfSphere(nullptr), _plane(nullptr)
+BRDFScene::BRDFScene() :
+	_brdfSphere(nullptr), _plane(nullptr),
+	_pointCloudShader(nullptr), _triangleMeshShader(nullptr), _triangleMeshNormalShader(nullptr), _triangleMeshPositionShader(nullptr),
+	_shadowsShader(nullptr), _wireframeShader(nullptr)
 {
-	//_testShader = new BRDFShader();
-	//_testShader->createShaderProgram("Assets/Shaders/Triangles/triangleMesh", Model3D::BRDFType::PHONG);
 }
 
 BRDFScene::~BRDFScene()
 {
+	delete _pointCloudShader;
+	delete _triangleMeshShader;
+	delete _triangleMeshNormalShader;
+	delete _triangleMeshPositionShader;
+	delete _shadowsShader;
+	delete _wireframeShader;
 }
 
 void BRDFScene::render(const mat4& mModel, RenderingParameters* rendParams)
 {
 	SSAOScene::render(mModel, rendParams);
+}
+
+void BRDFScene::updateBRDF(Model3D::BRDFType newBRDF)
+{
+	BRDFShader::clearCache();
+
+	// Change sphere for rendering
+	_brdfSphere->getModelCompent(0)->_brdf = newBRDF;
+
+	// Delete previous shaders
+	delete _pointCloudShader;
+	delete _triangleMeshShader;
+	delete _triangleMeshNormalShader;
+	delete _triangleMeshPositionShader;
+	delete _shadowsShader;
+	delete _wireframeShader;
+
+	// Compile new shaders
+	_pointCloudShader = new BRDFShader();
+	_pointCloudShader->createShaderProgram("Assets/Shaders/Points/pointCloud", newBRDF);
+	
+	_triangleMeshShader = new BRDFShader();
+	_triangleMeshShader->createShaderProgram("Assets/Shaders/Triangles/triangleMesh", newBRDF);
+
+	_triangleMeshNormalShader = new BRDFShader();
+	_triangleMeshNormalShader->createShaderProgram("Assets/Shaders/Triangles/triangleMeshNormal", newBRDF);
+
+	_triangleMeshPositionShader = new BRDFShader();
+	_triangleMeshPositionShader->createShaderProgram("Assets/Shaders/Triangles/triangleMeshPosition", newBRDF);
+
+	_shadowsShader = new BRDFShader();
+	_shadowsShader->createShaderProgram("Assets/Shaders/Triangles/shadowsShader", newBRDF);
+
+	_wireframeShader = new BRDFShader();
+	_wireframeShader->createShaderProgram("Assets/Shaders/Lines/wireframe", newBRDF);
 }
 
 Model3D::BRDFType* BRDFScene::getSphereBRDF()
@@ -134,13 +176,11 @@ void BRDFScene::loadModels()
 
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
-		//_sceneGroup->addComponent(_brdfSphere);
-
-		CADModel* droneModel = new CADModel("Assets/Models/Drone/DJIMatrice300RTK", "Assets/Models/Drone/", true);
-		_sceneGroup->addComponent(droneModel);
+		_sceneGroup->addComponent(_brdfSphere);
 	}
 
 	SSAOScene::loadModels();
+	this->updateBRDF(Model3D::COOK_TORRANCE);
 }
 
 bool BRDFScene::readCameraFromSettings(Camera* camera)
@@ -151,7 +191,6 @@ bool BRDFScene::readCameraFromSettings(Camera* camera)
 	std::ifstream inputStream;	
 	vec3 value;
 
-	//inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	inputStream.open(filename.c_str());
 
 	if (inputStream.fail()) return false;
@@ -202,7 +241,6 @@ bool BRDFScene::readLightsFromSettings()
 	float floatval;
 	std::string stringval;
 
-	//inputStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	inputStream.open(filename.c_str());
 
 	if (inputStream.fail()) return false;
@@ -332,10 +370,36 @@ bool BRDFScene::readLightsFromSettings()
 	return true;
 }
 
+void BRDFScene::drawAsPoints(const mat4& mModel, RenderingParameters* rendParams)
+{
+	Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	matrix[RendEnum::MODEL_MATRIX] = mModel;
+	matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+	_pointCloudShader->use();
+	_pointCloudShader->applyActiveSubroutines();
+
+	this->drawSceneAsPoints(_pointCloudShader, RendEnum::POINT_CLOUD_SHADER, &matrix, rendParams);
+}
+
+void BRDFScene::drawAsLines(const mat4& mModel, RenderingParameters* rendParams)
+{
+	Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	matrix[RendEnum::MODEL_MATRIX] = mModel;
+	matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+	_wireframeShader->use();
+	_wireframeShader->applyActiveSubroutines();
+
+	this->drawSceneAsLines(_wireframeShader, RendEnum::WIREFRAME_SHADER, &matrix, rendParams);
+}
+
 void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingParameters* rendParams)
 {
-	RenderingShader* normalShader = ShaderList::getInstance()->getRenderingShader(RendEnum::TRIANGLE_MESH_SHADER);
-	RenderingShader* brdfShader = ShaderList::getInstance()->getRenderingShader(RendEnum::BRDF_SPHERE_SHADER);
 	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
 	const mat4 bias = glm::translate(mat4(1.0f), vec3(0.5f)) * glm::scale(mat4(1.0f), vec3(0.5f));						// Proj: [-1, 1] => with bias: [0, 1]
 
@@ -345,6 +409,9 @@ void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingPar
 		matrix[RendEnum::VIEW_PROJ_MATRIX] = camera->getViewProjMatrix();
 
 		glDepthFunc(GL_LEQUAL);
+
+		_triangleMeshShader->use();
+		_triangleMeshShader->setUniform("materialScattering", rendParams->_materialScattering);
 	}
 
 	{
@@ -365,25 +432,132 @@ void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingPar
 			}
 
 			// First shader
-			normalShader->use();
-			_lights[i]->applyLight(normalShader, matrix[RendEnum::VIEW_MATRIX]);
-			_lights[i]->applyShadowMapTexture(normalShader);
-			normalShader->setUniform("materialScattering", rendParams->_materialScattering);
-			normalShader->applyActiveSubroutines();
+			_lights[i]->applyLight(_triangleMeshShader, matrix[RendEnum::VIEW_MATRIX]);
+			_lights[i]->applyShadowMapTexture(_triangleMeshShader);
+			_triangleMeshShader->applyActiveSubroutines();
 
-			_sceneGroup->drawAsTriangles(normalShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
-
-			// BRDF shader
-			//brdfShader->use();
-			//_lights[i]->applyLight(brdfShader, matrix[RendEnum::VIEW_MATRIX]);
-			//_lights[i]->applyShadowMapTexture(brdfShader);
-			//brdfShader->setUniform("materialScattering", rendParams->_materialScattering);
-			//brdfShader->applyActiveSubroutines();
-
-			//_brdfSphere->drawAsTriangles(brdfShader, RendEnum::BRDF_SPHERE_SHADER, matrix);
+			_sceneGroup->drawAsTriangles(_triangleMeshShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
 		}
 	}
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);					// Back to initial state
 	glDepthFunc(GL_LESS);
+}
+
+void BRDFScene::drawAsTriangles4Position(const mat4& mModel, RenderingParameters* rendParams)
+{
+	Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	{
+		matrix[RendEnum::MODEL_MATRIX] = mModel;
+		matrix[RendEnum::VIEW_MATRIX] = activeCamera->getViewMatrix();
+		matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+		_triangleMeshPositionShader->use();
+
+		this->drawSceneAsTriangles4Position(_triangleMeshPositionShader, RendEnum::TRIANGLE_MESH_POSITION_SHADER, &matrix, rendParams);
+	}
+}
+
+void BRDFScene::drawAsTriangles4Normal(const mat4& mModel, RenderingParameters* rendParams)
+{
+	Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	{
+		matrix[RendEnum::MODEL_MATRIX] = mModel;
+		matrix[RendEnum::VIEW_MATRIX] = activeCamera->getViewMatrix();
+		matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+		_triangleMeshNormalShader->use();
+
+		this->drawSceneAsTriangles4Normal(_triangleMeshNormalShader, RendEnum::TRIANGLE_MESH_POSITION_SHADER, &matrix, rendParams);
+	}
+}
+
+void BRDFScene::drawAsTriangles4Shadows(const mat4& mModel, RenderingParameters* rendParams)
+{
+	const ivec2 canvasSize = rendParams->_viewportSize;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	{
+		matrix[RendEnum::MODEL_MATRIX] = mModel;
+		
+		glEnable(GL_CULL_FACE);
+
+		_shadowsShader->use();
+	}
+
+	for (unsigned int i = 0; i < _lights.size(); ++i)
+	{
+		Light* light = _lights[i].get();
+
+		if (light->shouldCastShadows() && _computeShadowMap[i])
+		{
+			ShadowMap* shadowMap = light->getShadowMap();
+			const ivec2 size = shadowMap->getSize();
+
+			{
+				shadowMap->bindFBO();
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glViewport(0, 0, size.x, size.y);
+				_shadowsShader->applyActiveSubroutines();
+			}
+
+			matrix[RendEnum::VIEW_PROJ_MATRIX] = light->getCamera()->getViewProjMatrix();
+
+			_sceneGroup->drawAsTriangles4Shadows(_shadowsShader, RendEnum::SHADOWS_SHADER, matrix);
+
+			//_computeShadowMap[i] = false;
+		}
+	}
+
+	glViewport(0, 0, canvasSize.x, canvasSize.y);
+	glDisable(GL_CULL_FACE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void BRDFScene::renderScene(const mat4& mModel, RenderingParameters* rendParams)
+{
+	int visualizationMode = rendParams->_visualizationMode;
+
+	switch (visualizationMode)
+	{
+	case CGAppEnum::VIS_POINTS:
+		this->renderPointCloud(mModel, rendParams);
+		break;
+	case CGAppEnum::VIS_LINES:
+		this->renderWireframe(mModel, rendParams);
+		break;
+	case CGAppEnum::VIS_TRIANGLES:
+		this->renderTriangleMesh(mModel, rendParams);
+		break;
+	case CGAppEnum::VIS_ALL_TOGETHER:
+		this->renderTriangleMesh(mModel, rendParams);
+		this->renderWireframe(mModel, rendParams);
+		this->renderPointCloud(mModel, rendParams);
+		break;
+	}
+
+	this->renderVectors(mModel, rendParams);
+	this->renderOtherStructures(mModel, rendParams);
+}
+
+void BRDFScene::renderVectors(const mat4& mModel, RenderingParameters* rendParams)
+{
+	Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+	std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+	matrix[RendEnum::MODEL_MATRIX] = mat4(1.0f);
+	matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+	// BVH rendering
+	{
+		//RenderingShader* shader = ShaderList::getInstance()->getRenderingShader(RendEnum::VECTOR_INSTANCE_SHADER);
+		//shader->use();
+		//shader->applyActiveSubroutines();
+
+		//_sceneGroup->drawBVH(shader, RendEnum::WIREFRAME_SHADER, matrix);
+	}
 }

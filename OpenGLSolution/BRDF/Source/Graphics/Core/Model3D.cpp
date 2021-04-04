@@ -2,6 +2,7 @@
 #include "Model3D.h"
 
 #include "Graphics/Application/Renderer.h"
+#include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/FBOScreenshot.h"
 #include "Graphics/Core/Group3D.h"
 #include "Graphics/Core/OpenGLUtilities.h"
@@ -15,7 +16,7 @@
 // [Static variables initialization]
 
 const std::string Model3D::NO_BRDF_UNIFORM = "noBRDF";
-const std::string Model3D::BRDF_UNIFORM = "useBRDF";
+const std::string Model3D::BRDF_UNIFORM = "BRDF";
 const std::string Model3D::BRDF_UNIFORM_NAME = "brdfUniform";
 const GLuint Model3D::RESTART_PRIMITIVE_INDEX	= 0xFFFFFFFF;
 
@@ -170,6 +171,7 @@ void Model3D::drawAsLines(RenderingShader* shader, const RendEnum::RendShaderTyp
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
 		this->renderLines(shader, shaderType, matrix, modelComp, GL_LINES);
 	}
 }
@@ -178,6 +180,7 @@ void Model3D::drawAsPoints(RenderingShader* shader, const RendEnum::RendShaderTy
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
 		this->renderPoints(shader, shaderType, matrix, modelComp, GL_POINTS);
 	}
 }
@@ -195,6 +198,7 @@ void Model3D::drawAsTriangles4Shadows(RenderingShader* shader, const RendEnum::R
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
 		this->renderTriangles4Shadows(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
 	}
 }
@@ -372,8 +376,31 @@ void Model3D::setBRDFUniform(ShaderProgram* shader, const const RendEnum::RendSh
 	}
 	else
 	{
-		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, BRDF_UNIFORM);
+
+		// Indicate values for BRDF uniforms
+		std::vector<BRDFShader::ShaderVariable>* parameters = BRDFShader::getParameters(modelComponent->_brdf);
+
+		for (BRDFShader::ShaderVariable& variable: *parameters)
+		{
+			if (variable.isBoolean())
+			{
+				shader->setUniform(variable._name, variable._booleanValue);
+			}
+
+			if (variable.isInteger())
+			{
+				shader->setUniform(variable._name, variable._integerValue);
+			}
+
+			if (variable.isFloat())
+			{
+				shader->setUniform(variable._name, variable._floatValue);
+			}
+		}
 	}
+	
+	shader->applyActiveSubroutines();
 }
 
 void Model3D::setShaderUniforms(ShaderProgram* shader, const RendEnum::RendShaderTypes shaderType, const std::vector<mat4>& matrix)

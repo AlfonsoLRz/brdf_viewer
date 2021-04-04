@@ -208,9 +208,6 @@
     <Filter Include="Archivos de encabezado\ImportedLibraries\spline">
       <UniqueIdentifier>{52485f9a-e9eb-4ccd-b3e6-88e04675b4f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de recursos\Shaders\Compute\LiDAR">
-      <UniqueIdentifier>{2409f536-540f-44da-ad18-da285df8d0de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Archivos de recursos\Shaders\Compute\Model\PlanarSurface">
       <UniqueIdentifier>{fa8b8cdf-4b5f-4812-97f2-164a95f7b37d}</UniqueIdentifier>
     </Filter>
@@ -225,9 +222,6 @@
     </Filter>
     <Filter Include="Archivos de recursos\Shaders\Compute\Model\Terrain">
       <UniqueIdentifier>{a18e3efa-3b88-475d-9f0a-22fba28aa3d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Archivos de recursos\Shaders\Compute\LiDAR\Intersections">
-      <UniqueIdentifier>{c896f8cd-f491-414b-9e4f-b18017e9290c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Archivos de encabezado\Interface\Fonts">
       <UniqueIdentifier>{951ef8f6-0828-4c6c-a24e-b8adf387c3a9}</UniqueIdentifier>
@@ -250,11 +244,8 @@
     <Filter Include="Archivos de encabezado\ImportedLibraries\imnodes">
       <UniqueIdentifier>{32b46b58-445c-46c2-aa80-e86a809d8ccd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de recursos\Shaders\Compute\LiDAR\Instancing">
-      <UniqueIdentifier>{520559a6-a3f1-46b6-8528-def0e7454674}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Archivos de recursos\Shaders\Compute\Aggregation">
-      <UniqueIdentifier>{8b1826cf-767b-4661-ae68-465e4740fa41}</UniqueIdentifier>
+    <Filter Include="Archivos de recursos\Shaders\BRDFs">
+      <UniqueIdentifier>{f1702aa8-312f-4e86-b4d2-410f6b8929f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -778,12 +769,6 @@
     <None Include="Assets\Shaders\Triangles\uniformTriangleMesh-vert.glsl">
       <Filter>Archivos de recursos\Shaders\Triangles</Filter>
     </None>
-    <None Include="Assets\Shaders\Points\colouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\colouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\BVHGeneration\buildClusterBuffer-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\BVH Build</Filter>
     </None>
@@ -850,12 +835,6 @@
     <None Include="Assets\Shaders\Compute\Terrain\terrainErosion-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
     </None>
-    <None Include="Assets\Shaders\Points\pointCloudHeight-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudHeight-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Terrain\generateVegetation-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
     </None>
@@ -874,50 +853,14 @@
     <None Include="Assets\Shaders\Compute\Terrain\computeNormals-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
     </None>
-    <None Include="Assets\Shaders\Points\terrainColouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\terrainColouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\waterColouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\waterColouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\vegColouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\vegColouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Terrain\terrainGeometryTopology-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
     </None>
     <None Include="Assets\Shaders\Compute\Model\computeFaceAABB-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model</Filter>
     </None>
-    <None Include="Assets\Shaders\Points\pointCloudHeightGrayscale-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudHeightGrayscale-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\reflectiveColouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\reflectiveColouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Terrain\computeTreeProperties-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudReturnNumber-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudReturnNumber-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
     </None>
     <None Include="Assets\Shaders\Compute\Terrain\generateTreeGeometryTopology-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
@@ -927,18 +870,6 @@
     </None>
     <None Include="Assets\Shaders\Triangles\regularGrid-vert.glsl">
       <Filter>Archivos de recursos\Shaders\Triangles</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\treeColouredPointCloud-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\treeColouredPointCloud-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudIntensity-vert.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
-    </None>
-    <None Include="Assets\Shaders\Points\pointCloudIntensity-frag.glsl">
-      <Filter>Archivos de recursos\Shaders\Points</Filter>
     </None>
     <None Include="Assets\Shaders\2D\ssaoShader-frag.glsl">
       <Filter>Archivos de recursos\Shaders\2D</Filter>
@@ -976,71 +907,38 @@
     <None Include="Assets\Shaders\Compute\Interpolations\buildBezierCurve-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Interpolations</Filter>
     </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\Intersections\rayAABB_inters-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR\Intersections</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\Intersections\rayTriangle_inters-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR\Intersections</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Templates\constraints.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Templates</Filter>
     </None>
     <None Include="Assets\Shaders\Compute\Templates\random.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Templates</Filter>
     </None>
-    <None Include="Assets\Shaders\Compute\lidar\LiDARSensor-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\rayBVH-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\collisionBVH-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\computeIntensity-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\reflectIrradiance-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\findBVHCollision-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\solveCollision-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\prepareData-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\updateReturns-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Model\retrieveColors-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model</Filter>
     </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\addOutlier-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\computeColor-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\LiDAR\Instancing\terrestrialSpherical-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\LiDAR\Instancing</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Templates\rotation.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Templates</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\Aggregation\singleAggregation-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\Aggregation</Filter>
-    </None>
-    <None Include="Assets\Shaders\Compute\Aggregation\penaltyAggregation-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\Aggregation</Filter>
     </None>
     <None Include="Assets\Shaders\Triangles\brdfSphere-frag.glsl">
       <Filter>Archivos de recursos\Shaders\Triangles</Filter>
     </None>
     <None Include="Assets\Shaders\Triangles\brdfSphere-vert.glsl">
       <Filter>Archivos de recursos\Shaders\Triangles</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\CookTorrance.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\Phong.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\Lines\wireframeInstance-frag.glsl">
+      <Filter>Archivos de recursos\Shaders\Lines</Filter>
+    </None>
+    <None Include="Assets\Shaders\Lines\wireframeInstance-geo.glsl">
+      <Filter>Archivos de recursos\Shaders\Lines</Filter>
+    </None>
+    <None Include="Assets\Shaders\Lines\wireframeInstance-vert.glsl">
+      <Filter>Archivos de recursos\Shaders\Lines</Filter>
     </None>
   </ItemGroup>
 </Project>

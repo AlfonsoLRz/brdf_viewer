@@ -6,6 +6,9 @@
 // [Initialization of static attributes]
 
 const std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::BRDF_MODULE_PATH = BRDFShader::getBRDFModulePath();
+std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::_brdfContent;
+std::unordered_map<Model3D::BRDFType, std::vector<BRDFShader::ShaderVariable>> BRDFShader::_brdfVariables;
+
 const std::string BRDFShader::INCLUDE_BRDF_HEADER = "INCLUDE BRDF";
 const std::string BRDFShader::PARAMETERS_BEGIN = "::begin parameters";
 const std::string BRDFShader::PARAMETERS_END = "::end parameters";
@@ -20,6 +23,12 @@ BRDFShader::BRDFShader() : RenderingShader()
 
 BRDFShader::~BRDFShader()
 {
+}
+
+void BRDFShader::clearCache()
+{
+	_brdfContent.clear();
+	_brdfVariables.clear();
 }
 
 GLuint BRDFShader::createShaderProgram(const char* filename, Model3D::BRDFType brdf)
@@ -102,6 +111,15 @@ GLuint BRDFShader::createShaderProgram(const char* filename, Model3D::BRDFType b
 	std::fill(_activeSubroutineUniform[GEOMETRY_SHADER].begin(), _activeSubroutineUniform[GEOMETRY_SHADER].end(), -1);
 
 	return _handler;
+}
+
+std::vector<BRDFShader::ShaderVariable>* BRDFShader::getParameters(Model3D::BRDFType brdf)
+{
+	auto parametersIt = _brdfVariables.find(brdf);
+
+	if (parametersIt == _brdfVariables.end()) return nullptr;
+
+	return &parametersIt->second;
 }
 
 // [Protected methods]
@@ -194,13 +212,14 @@ void BRDFShader::findParameters(const std::string& fileContent, std::vector<Shad
 			FileManagement::clearTokens(stringTokens, floatTokens);
 			FileManagement::readTokens(line, ' ', stringTokens, floatTokens);
 
-			if (!stringTokens.empty() && !floatTokens.empty())
+			if (stringTokens.size() == 2 && !floatTokens.empty())		// Strings: type + name
 			{
 				if (stringTokens[0] == "float" && floatTokens.size() == 3)
 				{
 					ShaderVariable variable {};
 					variable._type = ShaderVariableType::FLOAT;
-					variable._defaultFloat = floatTokens[2];
+					variable._name = stringTokens[1];
+					variable._floatValue = floatTokens[2];
 					variable._floatRange = vec2(floatTokens[0], floatTokens[1]);
 					variables.push_back(variable);
 				}
@@ -208,7 +227,8 @@ void BRDFShader::findParameters(const std::string& fileContent, std::vector<Shad
 				{
 					ShaderVariable variable {};
 					variable._type = ShaderVariableType::INTEGER;
-					variable._defaultInteger = floatTokens[2];
+					variable._name = stringTokens[1];
+					variable._integerValue = floatTokens[2];
 					variable._integerRange = vec2(floatTokens[0], floatTokens[1]);
 					variables.push_back(variable);
 				}
@@ -216,7 +236,8 @@ void BRDFShader::findParameters(const std::string& fileContent, std::vector<Shad
 				{
 					ShaderVariable variable{};
 					variable._type = ShaderVariableType::BOOLEAN;
-					variable._defaultBoolean = bool(floatTokens[0]);
+					variable._name = stringTokens[1];
+					variable._booleanValue = bool(floatTokens[0]);
 					variables.push_back(variable);
 				}
 			}
@@ -235,6 +256,14 @@ void BRDFShader::findShader(const std::string& fileContent, std::string& shaderC
 	}
 
 	shaderContent = fileContent.substr(beginPosition + SHADER_BEGIN.size(), endPosition - beginPosition - SHADER_END.size() - 2);
+
+	const std::string subroutineString = "\nsubroutine(brdfType)\n";
+	const std::size_t brdfUniformPosition = shaderContent.find(Model3D::BRDF_UNIFORM);
+
+	if (brdfUniformPosition != std::string::npos)
+	{
+		shaderContent.insert(brdfUniformPosition - 5, subroutineString.c_str());
+	}
 }
 
 std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::getBRDFModulePath()
@@ -244,15 +273,26 @@ std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::getBRDFModulePath
 	brdfModulePath[Model3D::BRDFType::IDEAL_DIFFUSE] = "Assets/Shaders/BRDFs/IdealDiffuse.brdf";
 	brdfModulePath[Model3D::BRDFType::OREN_NAYAR] = "Assets/Shaders/BRDFs/OrenNayar.brdf";
 	brdfModulePath[Model3D::BRDFType::PHONG] = "Assets/Shaders/BRDFs/Phong.brdf";
+	brdfModulePath[Model3D::BRDFType::COOK_TORRANCE] = "Assets/Shaders/BRDFs/CookTorrance.brdf";
 
 	return brdfModulePath;
 }
 
 bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType brdfType)
 {
+	// Check if a include line is active
 	size_t headerPosition = shaderContent.find(INCLUDE_BRDF_HEADER);
+	if (headerPosition == std::string::npos) return true;
 
-	while (headerPosition != std::string::npos)
+	// Check if BRDF was previously loaded
+	std::string brdfShaderString;
+	auto shaderIterator = _brdfContent.find(brdfType);
+
+	if (shaderIterator != _brdfContent.end())
+	{
+		brdfShaderString = shaderIterator->second;
+	}
+	else
 	{
 		auto it = BRDF_MODULE_PATH.find(brdfType);
 		if (it == BRDF_MODULE_PATH.end() || !fileExists(it->second))														// Library refers to a new file, does it exist?
@@ -267,13 +307,39 @@ bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType
 
 		// Find parameters from loaded string
 		BRDFShader::findParameters(fileContent, variables);
-		
+
 		// Find shader implementation
 		BRDFShader::findShader(fileContent, brdfShaderContent);
-		
-		shaderContent.erase(shaderContent.begin() + headerPosition, shaderContent.begin() + headerPosition + INCLUDE_BRDF_HEADER.size());			// Replace string in shader code
-		shaderContent.insert(headerPosition, brdfShaderContent.c_str());
+
+		// Gather both uniform parameters and BRDF behaviour
+		this->joinParameterShader(variables, brdfShaderContent, brdfShaderString);
+
+		// Save BRDF shader for later shaders
+		_brdfContent[brdfType] = brdfShaderString;
+		_brdfVariables[brdfType] = variables;
 	}
 
+	shaderContent.erase(shaderContent.begin() + headerPosition, shaderContent.begin() + headerPosition + INCLUDE_BRDF_HEADER.size());			// Replace string in shader code
+	shaderContent.insert(headerPosition, brdfShaderString.c_str());
+
 	return true;
+}
+
+void BRDFShader::joinParameterShader(std::vector<BRDFShader::ShaderVariable>& parameters, const std::string& shaderContent, std::string& result)
+{
+	std::string parametersString = "";
+
+	for (BRDFShader::ShaderVariable& variable: parameters)
+	{
+		parametersString += variable.toUniformLine() + '\n';
+	}
+
+	result = parametersString + shaderContent;
+}
+
+/// Shader variable
+
+std::string BRDFShader::ShaderVariable::toUniformLine()
+{
+	return "uniform " + VARIABLE_TYPE_NAME[_type] + " " + _name + ";";
 }

@@ -22,17 +22,29 @@ PlanarSurface::~PlanarSurface()
 
 void PlanarSurface::drawAsLines(RenderingShader* shader, const RendEnum::RendShaderTypes shaderType, std::vector<mat4>& matrix)
 {
-	this->renderLines(shader, shaderType, matrix, _modelComp[0], GL_LINE_STRIP);
+	for (ModelComponent* modelComp : _modelComp)
+	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
+		this->renderLines(shader, shaderType, matrix, modelComp, GL_LINE_STRIP);
+	}
 }
 
 void PlanarSurface::drawAsTriangles(RenderingShader* shader, const RendEnum::RendShaderTypes shaderType, std::vector<mat4>& matrix)
 {
-	this->renderTriangles(shader, shaderType, matrix, _modelComp[0], GL_TRIANGLE_STRIP);
+	for (ModelComponent* modelComp : _modelComp)
+	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
+		this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLE_STRIP);
+	}
 }
 
 void PlanarSurface::drawAsTriangles4Shadows(RenderingShader* shader, const RendEnum::RendShaderTypes shaderType, std::vector<mat4>& matrix)
 {
-	this->renderTriangles4Shadows(shader, shaderType, matrix, _modelComp[0], GL_TRIANGLE_STRIP);
+	for (ModelComponent* modelComp : _modelComp)
+	{
+		this->setBRDFUniform(shader, shaderType, modelComp);
+		this->renderTriangles4Shadows(shader, shaderType, matrix, _modelComp[0], GL_TRIANGLE_STRIP);
+	}
 }
 
 bool PlanarSurface::load(const mat4& modelMatrix)

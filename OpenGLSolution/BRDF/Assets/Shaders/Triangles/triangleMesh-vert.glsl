@@ -7,7 +7,7 @@ layout(location = 1) in vec3 vNormal;
 layout(location = 2) in vec2 vTextCoord;
 layout(location = 3) in vec3 vTangent;
 
-subroutine vec3 brdfType(vec3 L, vec3 N, vec3 V);
+subroutine vec3 brdfType(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y);
 subroutine uniform brdfType brdfUniform;
 
 // Lighting
@@ -26,30 +26,19 @@ out vec3 normal;
 out vec2 textCoord;
 out vec4 shadowCoord;
 
-// ********* FUNCTIONS ************
-
-//INCLUDE BRDF
-subroutine(brdfType)
-vec3 useBRDF(vec3 L, vec3 N, vec3 V)
-{
-	vec3 R = reflect(L, N);
-    float val = pow(max(0, dot(R, V)), 2.0f);
-	const float intensity = max(val, 1.0f / 3.14f);
-
-	return N * intensity;
-}
+INCLUDE BRDF
 
 subroutine(brdfType)
-vec3 noBRDF(vec3 L, vec3 N, vec3 V)
+vec3 noBRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 {
 	return vPosition;
 }
 
 void main()
 {
-	const vec3 L = normalize(vec3(-1.0f, -1.0f, .0f));
+	const vec3 L = normalize(vec3(.0f, 1.0f, .0f));
 	const vec3 V = normalize(vec3(1.0f, 1.0f, .0f));
-	const vec3 vertexPosition = brdfUniform(L, normal, V);
+	const vec3 vertexPosition = brdfUniform(L, normalize(vPosition), V, vec3(.0f), vec3(.0f));
 
 	worldPosition = vertexPosition;
 	position = vec3(mModelView *  vec4(vertexPosition, 1.0f));

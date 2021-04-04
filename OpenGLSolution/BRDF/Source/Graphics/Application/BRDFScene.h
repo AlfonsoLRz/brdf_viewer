@@ -46,11 +46,17 @@ protected:
 
 protected:
 	// Models
-	BRDFSphere*		_brdfSphere;				//!<
-	PlanarSurface*	_plane;				//!<
+	BRDFSphere*		_brdfSphere;							//!<
+	VAO*			_lineVAO;								//!<
+	PlanarSurface*	_plane;									//!<
 
 	// Shaders
-	BRDFShader* _testShader;	
+	BRDFShader*		_pointCloudShader;						//!<
+	BRDFShader*		_triangleMeshShader;					//!<
+	BRDFShader*		_triangleMeshPositionShader;			//!<
+	BRDFShader*		_triangleMeshNormalShader;				//!<
+	BRDFShader*		_shadowsShader;							//!<
+	BRDFShader*		_wireframeShader;						//!<
 
 protected:
 	/**
@@ -96,11 +102,58 @@ protected:
 	// ------ Rendering ------
 
 	/**
+	*	@brief Renders the scene as a set of points.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void drawAsPoints(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders the scene as a set of lines.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void drawAsLines(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
 	*	@brief Renders the scene as a set of triangles.
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
 	virtual void drawAsTriangles(Camera* camera, const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders the scene so that every fragment take the color of its position.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void drawAsTriangles4Position(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders the scene so that every fragment take the color of its normal.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void drawAsTriangles4Normal(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders the scene as a set of triangles with no textures.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void drawAsTriangles4Shadows(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders the scene without any post-processing efect.
+	*/
+	virtual void renderScene(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders ...
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void renderVectors(const mat4& mModel, RenderingParameters* rendParams);
 
 public:
 	/**
@@ -119,6 +172,11 @@ public:
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
 	virtual void render(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief 
+	*/
+	void updateBRDF(Model3D::BRDFType newBRDF);
 
 	// ------- Getters --------
 

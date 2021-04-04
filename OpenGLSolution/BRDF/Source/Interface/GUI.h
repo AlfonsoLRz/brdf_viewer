@@ -6,8 +6,10 @@
 #include "imnodes/imnodes.h"
 #include "implot/implot.h"
 
+#include "Graphics/Application/BRDFScene.h"
 #include "Graphics/Application/Renderer.h"
 #include "Graphics/Application/RenderingParameters.h"
+#include "Graphics/Core/BRDFShader.h"
 #include "Interface/ForestEditorNode.h"
 #include "Utilities/Singleton.h"
 
@@ -36,7 +38,9 @@ protected:
 	bool							_showScreenshotSettings;			//!< Shows a window which allows to take an screenshot at any size
 
 	// BRDF
-	Model3D::BRDFType*				_sphereBRDF;						//!<
+	std::vector<BRDFShader::ShaderVariable>* _brdfParameters;		//!<
+	BRDFScene*									_brdfScene;				//!<
+	Model3D::BRDFType*							_sphereBRDF;			//!<
 
 	// Forest Editor
 	//std::vector<ForestEditorNode*>  _forestNode;						//!<
@@ -72,6 +76,11 @@ protected:
 	*	@brief  
 	*/
 	void loadImGUIStyle();
+
+	/**
+	*	@brief  
+	*/
+	void renderBRDFParameters();
 
 	/**
 	*	@brief Renders a help icon with a message.

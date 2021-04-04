@@ -42,28 +42,28 @@ protected:
 	/**
 	*	@brief Renders the scene without any post-processing efect.
 	*/
-	void renderScene(const mat4& mModel, RenderingParameters* rendParams);
+	virtual void renderScene(const mat4& mModel, RenderingParameters* rendParams);
 
 	/**
 	*	@brief Renders the scenario as a point cloud.
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
-	void renderPointCloud(const mat4& mModel, RenderingParameters* rendParams);
+	virtual void renderPointCloud(const mat4& mModel, RenderingParameters* rendParams);
 
 	/**
 	*	@brief Renders the scenario as a wireframe mesh.
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
-	void renderWireframe(const mat4& mModel, RenderingParameters* rendParams);
+	virtual void renderWireframe(const mat4& mModel, RenderingParameters* rendParams);
 
 	/**
 	*	@brief Renders the triangle mesh scenario, whether it is rendered with real colors or semantic concepts.
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
-	void renderTriangleMesh(const mat4& mModel, RenderingParameters* rendParams);
+	virtual void renderTriangleMesh(const mat4& mModel, RenderingParameters* rendParams);
 
 	// --------------- Other secondary structures ----------------------
 	

@@ -16,7 +16,7 @@ struct RenderingParameters
 {
 
 public:
-	inline static const char* BRDF_STR[Model3D::NUM_BRDF_TYPES] = { "None", "Ideal Diffuse", "Oren Nayar", "Phong" };
+	inline static const char* BRDF_STR[Model3D::NUM_BRDF_TYPES] = { "None", "Ideal Diffuse", "Oren Nayar", "Phong", "Cook Torrance" };
 
 public:
 	// Application
@@ -29,6 +29,7 @@ public:
 
 	// BRDF
 	int								_brdfType;								//!< Type of BRDF that adopt the sphere
+	vec3							_L, _V;									//!< 
 
 	// Screenshot
 	char							_screenshotFilenameBuffer[32];			//!< Location of screenshot
@@ -67,6 +68,8 @@ public:
 		_materialScattering(1.0f),
 
 		_brdfType(Model3D::IDEAL_DIFFUSE),
+		_L(glm::normalize(vec3(1.0f, 1.0f, .0f))),
+		_V(glm::normalize(vec3(1.0f, 1.0f, .0f))),
 
 		_screenshotFilenameBuffer("Screenshot.png"),
 		_screenshotMultiplier(1.0f),

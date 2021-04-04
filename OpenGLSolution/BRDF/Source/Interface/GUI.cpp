@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUI.h"
 
-#include "Graphics/Application/BRDFScene.h"
 #include "Graphics/Application/Renderer.h"
 #include "Interface/Fonts/font_awesome.hpp"
 #include "Interface/Fonts/lato.hpp"
@@ -15,8 +14,9 @@ GUI::GUI() :
 	_renderer			= Renderer::getInstance();	
 	_renderingParams	= Renderer::getInstance()->getRenderingParameters();
 
-	BRDFScene* scene = dynamic_cast<BRDFScene*>(_renderer->getCurrentScene());
-	_sphereBRDF = scene->getSphereBRDF();
+	_brdfScene = dynamic_cast<BRDFScene*>(_renderer->getCurrentScene());
+	_sphereBRDF = _brdfScene->getSphereBRDF();
+	_brdfParameters = BRDFShader::getParameters(*_sphereBRDF);
 
 	//for (int nodeIdx = 0; nodeIdx < ForestEditorNode::NUM_NODE_TYPES; ++nodeIdx)
 	//{
@@ -265,6 +265,29 @@ void GUI::showRenderingSettings()
 
 				ImGui::PushItemWidth(200.0f);
 				ImGui::Combo("Visualization", (int*)_sphereBRDF, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR));
+				ImGui::PopItemWidth();
+
+				{
+					ImGui::SameLine(0, 30);
+					ImGui::PushID(0);
+					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(3 / 7.0f, 0.6f, 0.6f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(3 / 7.0f, 0.7f, 0.7f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(3 / 7.0f, 0.8f, 0.8f));
+
+					if (ImGui::Button("Refresh BRDF"))
+					{
+
+					}
+
+					ImGui::PopStyleColor(3);
+					ImGui::PopID();
+				}
+
+				this->leaveSpace(2);
+
+				ImGui::PushItemWidth(300.0f);
+				this->renderBRDFParameters();
+				ImGui::PopItemWidth();
 
 				ImGui::EndTabItem();
 			}
@@ -404,6 +427,72 @@ void GUI::loadImGUIStyle()
 	ImGui::StyleColorsDark();
 
 	this->loadFonts();
+}
+
+void GUI::renderBRDFParameters()
+{
+	// Evaluate existence of variable types
+	bool existBool = false, existInt = false, existFloat = false;
+
+	for (BRDFShader::ShaderVariable& variable : *_brdfParameters)
+	{
+		existBool |= variable.isBoolean();
+		existInt |= variable.isInteger();
+		existFloat |= variable.isFloat();
+	}
+	
+	// Boolean values first
+	if (existBool)
+	{
+		ImGui::Text("Boolean values");
+		ImGui::Separator();
+		
+		this->leaveSpace(1);
+
+		for (BRDFShader::ShaderVariable& variable : *_brdfParameters)
+		{
+			if (variable.isBoolean())
+			{
+				ImGui::Checkbox(variable._name.c_str(), &variable._booleanValue);
+			}
+		}
+
+		this->leaveSpace(2);
+	}
+
+	if (existInt) 
+	{
+		ImGui::Text("Integer values");
+		ImGui::Separator();
+
+		this->leaveSpace(1);
+
+		for (BRDFShader::ShaderVariable& variable : *_brdfParameters)
+		{
+			if (variable.isInteger())
+			{
+				ImGui::SliderInt(variable._name.c_str(), &variable._integerValue, variable._integerRange.x, variable._integerRange.y);
+			}
+		}
+
+		this->leaveSpace(2);
+	}
+
+	if (existFloat) 
+	{
+		ImGui::Text("Float values");
+		ImGui::Separator();
+
+		this->leaveSpace(1);
+
+		for (BRDFShader::ShaderVariable& variable : *_brdfParameters)
+		{
+			if (variable.isFloat())
+			{
+				ImGui::SliderFloat(variable._name.c_str(), &variable._floatValue, variable._floatRange.x, variable._floatRange.y);
+			}
+		}
+	}
 }
 
 void GUI::loadFonts()
