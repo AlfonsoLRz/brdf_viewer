@@ -1,0 +1,25 @@
+!
+LightType 		POINT_LIGHT
+LightPosition 		2.64 2.86 -0.44
+LightDirection 		-0.00001 -1.0 0.0
+DiffuseIntensity 	0.6 0.6 0.6
+SpecularIntensity 	0.3 0.3 0.3
+CastShadows		true
+BlurShadow		1
+ShadowMapSize		4096 4096
+ShadowIntensity		0.4 1.0
+ShadowCameraAngle_Y 	2.8
+ShadowRadius		0.004
+!
+LightType 		DIRECTIONAL_LIGHT
+LightDirection 		-1.0 -1.0 0.0
+DiffuseIntensity 	0.3 0.3 0.3
+SpecularIntensity 	0.0 0.0 0.0
+!
+LightType 		DIRECTIONAL_LIGHT
+LightDirection		1.0 1.0 1.0
+DiffuseIntensity 	0.2 0.2 0.2
+SpecularIntensity 	0.0 0.0 0.0
+!
+LightType 		RIM_LIGHT
+AmbientIntensity	0.015 0.015 0.05

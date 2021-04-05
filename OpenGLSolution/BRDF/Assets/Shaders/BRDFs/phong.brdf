@@ -1,0 +1,24 @@
+analytic
+
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin parameters
+float n 1 1000 100
+::end parameters
+
+::begin shader
+
+// Phong BRDF
+
+vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+	vec3 R = reflect(L, N);
+    float val = pow(max(0, dot(R, V)), 2.0f);
+	const float intensity = max(val, 1.0f / 3.14f);
+
+	return N * intensity;
+}
+
+::end shader
