@@ -76,6 +76,7 @@
     <ClInclude Include="Source\Graphics\Core\OpenGLUtilities.h" />
     <ClInclude Include="Source\Graphics\Core\OrthoProjection.h" />
     <ClInclude Include="Source\Graphics\Core\PerspProjection.h" />
+    <ClInclude Include="Source\Graphics\Core\PGLLPointCloud.h" />
     <ClInclude Include="Source\Graphics\Core\PixarAttenuation.h" />
     <ClInclude Include="Source\Graphics\Core\PlanarSurface.h" />
     <ClInclude Include="Source\Graphics\Core\PointLight.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="Source\Graphics\Core\OpenGLUtilities.cpp" />
     <ClCompile Include="Source\Graphics\Core\OrthoProjection.cpp" />
     <ClCompile Include="Source\Graphics\Core\PerspProjection.cpp" />
+    <ClCompile Include="Source\Graphics\Core\PGLLPointCloud.cpp" />
     <ClCompile Include="Source\Graphics\Core\PixarAttenuation.cpp" />
     <ClCompile Include="Source\Graphics\Core\PlanarSurface.cpp" />
     <ClCompile Include="Source\Graphics\Core\PointLight.cpp" />

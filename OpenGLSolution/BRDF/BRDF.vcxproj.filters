@@ -504,6 +504,9 @@
     <ClInclude Include="Source\Graphics\Core\BRDFShader.h">
       <Filter>Archivos de encabezado\Graphics\Core\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Core\PGLLPointCloud.h">
+      <Filter>Archivos de encabezado\Graphics\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry\2D\Vector2.cpp">
@@ -724,6 +727,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\Core\BRDFShader.cpp">
       <Filter>Archivos de origen\Graphics\Core\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Core\PGLLPointCloud.cpp">
+      <Filter>Archivos de origen\Graphics\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

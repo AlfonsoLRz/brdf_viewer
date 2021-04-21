@@ -3,6 +3,7 @@
 #include "Graphics/Application/SSAOScene.h"
 #include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/BRDFSphere.h"
+#include "Graphics/Core/PGLLPointCloud.h"
 #include "Graphics/Core/PlanarSurface.h"
 
 #define NEW_LIGHT "!"
@@ -40,7 +41,8 @@ class BRDFScene: public SSAOScene
 protected:
 	const static std::string SCENE_SETTINGS_FOLDER;			//!<	
 
-	// Settings constraints
+	// Storage path
+	const static std::string BRDF_FILE;
 	const static std::string SCENE_CAMERA_FILE;				//!<
 	const static std::string SCENE_LIGHTS_FILE;				//!<
 
@@ -48,6 +50,7 @@ protected:
 	// Models
 	BRDFSphere*		_brdfSphere;							//!<
 	VAO*			_lineVAO;								//!<
+	PGLLPointCloud* _pgllPointCloud;						//!<
 	PlanarSurface*	_plane;									//!<
 
 	// Shaders

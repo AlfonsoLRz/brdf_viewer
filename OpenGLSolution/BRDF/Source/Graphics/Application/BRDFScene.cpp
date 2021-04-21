@@ -11,13 +11,14 @@
 /// Initialization of static attributes
 const std::string BRDFScene::SCENE_SETTINGS_FOLDER = "Assets/Scene/Settings/BRDF/";
 
+const std::string BRDFScene::BRDF_FILE = "Assets/PGLL/m0_sincos.txt";
 const std::string BRDFScene::SCENE_CAMERA_FILE = "Camera.txt";
 const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
 // [Public methods]
 
 BRDFScene::BRDFScene() :
-	_brdfSphere(nullptr), _plane(nullptr),
+	_brdfSphere(nullptr), _plane(nullptr), _pgllPointCloud(nullptr),
 	_pointCloudShader(nullptr), _triangleMeshShader(nullptr), _triangleMeshNormalShader(nullptr), _triangleMeshPositionShader(nullptr),
 	_shadowsShader(nullptr), _wireframeShader(nullptr)
 {
@@ -25,6 +26,7 @@ BRDFScene::BRDFScene() :
 
 BRDFScene::~BRDFScene()
 {
+	delete _pgllPointCloud;
 	delete _pointCloudShader;
 	delete _triangleMeshShader;
 	delete _triangleMeshNormalShader;
@@ -176,7 +178,10 @@ void BRDFScene::loadModels()
 
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
-		_sceneGroup->addComponent(_brdfSphere);
+		//_sceneGroup->addComponent(_brdfSphere);
+
+		_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);
+		_sceneGroup->addComponent(_pgllPointCloud);
 	}
 
 	SSAOScene::loadModels();

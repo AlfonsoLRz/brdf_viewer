@@ -56,7 +56,7 @@ inline void FileManagement::readTokens(const std::string& line, const char delim
 	std::string tokenString;
 	float tokenFloat;
 
-	while (std::getline(ss, tokenString, delimiter) && !tokenString.empty())
+	while (std::getline(ss, tokenString, delimiter))
 	{
 		try
 		{
