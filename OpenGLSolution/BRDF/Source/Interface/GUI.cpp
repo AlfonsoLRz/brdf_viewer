@@ -14,9 +14,10 @@ GUI::GUI() :
 	_renderer			= Renderer::getInstance();	
 	_renderingParams	= Renderer::getInstance()->getRenderingParameters();
 
-	_brdfScene = dynamic_cast<BRDFScene*>(_renderer->getCurrentScene());
-	_sphereBRDF = _brdfScene->getSphereBRDF();
-	_brdfParameters = BRDFShader::getParameters(*_sphereBRDF);
+	_brdfScene			= dynamic_cast<BRDFScene*>(_renderer->getCurrentScene());
+	_sceneComponents	= _brdfScene->getSceneComponents();
+	_sphereBRDF			= _brdfScene->getSphereBRDF();
+	_brdfParameters		= BRDFShader::getParameters(*_sphereBRDF);
 
 	//for (int nodeIdx = 0; nodeIdx < ForestEditorNode::NUM_NODE_TYPES; ++nodeIdx)
 	//{
@@ -37,6 +38,7 @@ void GUI::createMenu()
 
 	if (_showRenderingSettings)		showRenderingSettings();
 	if (_showScreenshotSettings)	showScreenshotSettings();
+	if (_showSceneObjects)			showSceneObjects();
 	if (_showAboutUs)				showAboutUsWindow();
 	if (_showControls)				showControls();
 	//if (_showForestEditor)			showForestEditor();
@@ -46,6 +48,7 @@ void GUI::createMenu()
 		if (ImGui::BeginMenu(ICON_FA_COG "Settings"))
 		{
 			ImGui::MenuItem(ICON_FA_CUBE "Rendering", NULL, &_showRenderingSettings);
+			ImGui::MenuItem(ICON_FA_IMAGE "Items", NULL, &_showSceneObjects);
 			ImGui::MenuItem(ICON_FA_IMAGE "Screenshot", NULL, &_showScreenshotSettings);
 			ImGui::EndMenu();
 		}
@@ -335,6 +338,34 @@ void GUI::showRenderingSettings()
 	ImGui::End();
 }
 
+void GUI::showSceneObjects()
+{
+	ImGui::SetNextWindowSize(ImVec2(480, 440), ImGuiCond_FirstUseEver);
+
+	if (ImGui::Begin("Scene Models", &_showSceneObjects, ImGuiWindowFlags_None))
+	{
+		// Left
+		static int modelCompSelected = 0;
+
+		ImGui::BeginChild("Objects", ImVec2(150, 0), true);
+
+		for (int i = 0; i < _sceneComponents->size(); ++i)
+		{
+			if (ImGui::Selectable(_sceneComponents->at(i)->_name.c_str(), modelCompSelected == i))
+				modelCompSelected = i;
+		}
+
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		// Right
+		this->renderObjectPanel(_sceneComponents->at(modelCompSelected));
+	}
+
+	ImGui::End();
+}
+
 void GUI::showScreenshotSettings()
 {
 	if (ImGui::Begin("Screenshot Settings", &_showScreenshotSettings, ImGuiWindowFlags_AlwaysAutoResize))
@@ -495,6 +526,33 @@ void GUI::renderBRDFParameters()
 	}
 }
 
+void GUI::renderObjectPanel(Model3D::ModelComponent* modelComponent)
+{
+	ImGui::BeginGroup();
+	ImGui::BeginChild("Model Component View", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));		// Leave room for 1 line below us
+
+	ImGui::Text(modelComponent->_name.c_str());
+	ImGui::Separator();
+
+	{
+		this->leaveSpace(2);
+		
+		ImGui::PushID(0);
+		ImGui::PushStyleColor(ImGuiCol_Text, (ImVec4)ImColor::HSV(3 / 7.0f, 0.6f, 0.6f));
+
+		ImGui::Text("Rendering");
+		ImGui::Separator();
+
+		ImGui::PopStyleColor(1);
+		ImGui::PopID();
+
+		ImGui::Checkbox("Enable Rendering", &modelComponent->_activeRendering);
+	}
+
+	ImGui::EndChild();
+	ImGui::EndGroup();
+}
+
 void GUI::loadFonts()
 {
 	ImFontConfig cfg;
@@ -503,13 +561,13 @@ void GUI::loadFonts()
 	std::copy_n("Lato", 5, cfg.Name);
 	io.Fonts->AddFontFromMemoryCompressedBase85TTF(lato_compressed_data_base85, 15.0f, &cfg);
 
-	//static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	//cfg.MergeMode = true;
-	//cfg.PixelSnapH = true;
-	//cfg.GlyphMinAdvanceX = 20.0f;
-	//cfg.GlyphMaxAdvanceX = 20.0f;
-	//std::copy_n("FontAwesome", 12, cfg.Name);
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	cfg.MergeMode = true;
+	cfg.PixelSnapH = true;
+	cfg.GlyphMinAdvanceX = 20.0f;
+	cfg.GlyphMaxAdvanceX = 20.0f;
+	std::copy_n("FontAwesome", 12, cfg.Name);
 
-	//io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-regular-400.ttf", 13.0f, &cfg, icons_ranges);
-	//io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-solid-900.ttf", 13.0f, &cfg, icons_ranges);
+	io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-regular-400.ttf", 13.0f, &cfg, icons_ranges);
+	io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-solid-900.ttf", 13.0f, &cfg, icons_ranges);
 }

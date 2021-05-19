@@ -24,8 +24,11 @@ void PlanarSurface::drawAsLines(RenderingShader* shader, const RendEnum::RendSha
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderLines(shader, shaderType, matrix, modelComp, GL_LINE_STRIP);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderLines(shader, shaderType, matrix, modelComp, GL_LINE_STRIP);
+		}
 	}
 }
 
@@ -33,8 +36,11 @@ void PlanarSurface::drawAsTriangles(RenderingShader* shader, const RendEnum::Ren
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLE_STRIP);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLE_STRIP);
+		}
 	}
 }
 
@@ -42,8 +48,11 @@ void PlanarSurface::drawAsTriangles4Shadows(RenderingShader* shader, const RendE
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderTriangles4Shadows(shader, shaderType, matrix, _modelComp[0], GL_TRIANGLE_STRIP);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderTriangles4Shadows(shader, shaderType, matrix, _modelComp[0], GL_TRIANGLE_STRIP);
+		}
 	}
 }
 

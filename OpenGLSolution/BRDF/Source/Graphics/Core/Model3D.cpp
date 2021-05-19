@@ -171,8 +171,11 @@ void Model3D::drawAsLines(RenderingShader* shader, const RendEnum::RendShaderTyp
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderLines(shader, shaderType, matrix, modelComp, GL_LINES);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderLines(shader, shaderType, matrix, modelComp, GL_LINES);
+		}
 	}
 }
 
@@ -180,8 +183,11 @@ void Model3D::drawAsPoints(RenderingShader* shader, const RendEnum::RendShaderTy
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderPoints(shader, shaderType, matrix, modelComp, GL_POINTS);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderPoints(shader, shaderType, matrix, modelComp, GL_POINTS);
+		}
 	}
 }
 
@@ -189,8 +195,11 @@ void Model3D::drawAsTriangles(RenderingShader* shader, const RendEnum::RendShade
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderTriangles(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
+		}
 	}
 }
 
@@ -198,8 +207,11 @@ void Model3D::drawAsTriangles4Shadows(RenderingShader* shader, const RendEnum::R
 {
 	for (ModelComponent* modelComp : _modelComp)
 	{
-		this->setBRDFUniform(shader, shaderType, modelComp);
-		this->renderTriangles4Shadows(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
+		if (modelComp->_activeRendering)
+		{
+			this->setBRDFUniform(shader, shaderType, modelComp);
+			this->renderTriangles4Shadows(shader, shaderType, matrix, modelComp, GL_TRIANGLES);
+		}
 	}
 }
 
@@ -538,7 +550,7 @@ void Model3D::renderTriangles4Shadows(RenderingShader* shader, const RendEnum::R
 /// [Public methods]
 
 Model3D::ModelComponent::ModelComponent(Model3D* root) :
-	_root(root), _id(-1), _brdf(Model3D::BRDFType::NONE), _material(nullptr), _topologyIndicesLength(RendEnum::numIBOTypes()), _vao(nullptr)
+	_root(root), _id(-1), _activeRendering(true), _brdf(Model3D::BRDFType::NONE), _material(nullptr), _topologyIndicesLength(RendEnum::numIBOTypes()), _vao(nullptr)
 {
 }
 

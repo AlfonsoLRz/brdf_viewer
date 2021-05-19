@@ -64,6 +64,7 @@ void SSAOScene::loadModels()
 	if (_sceneGroup != nullptr)
 	{
 		_sceneGroup->load();
+		_sceneGroup->registerScene();
 	}
 }
 

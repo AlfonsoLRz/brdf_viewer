@@ -27,7 +27,7 @@
 #incident_and_front_integral	30	0	0.0175
 #mountain_minimum_angle	0.0014 [deg]
 #datapoints_in_file	249290
-#format: theta	phi	[uA]
+#format: theta phi [uA]
 56.9211  3.31536  0.013161
 60.0832  3.15984  0.0952764
 45.3259  2.97898  0.0869473

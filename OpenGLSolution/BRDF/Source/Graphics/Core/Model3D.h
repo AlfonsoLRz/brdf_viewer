@@ -409,6 +409,7 @@ public:
 	VAO*						_vao;										//!<
 			
 	// [Additional info]
+	bool						_activeRendering;							//!<
 	Model3D::BRDFType			_brdf;										//!<
 	Material*					_material;									//!< As many vector as material types for different shaders
 	ModelComponentDescription	_modelDescription;							//!<

@@ -35,11 +35,13 @@ protected:
 	bool							_showControls;						//!< Shows application controls
 	bool							_showForestEditor;					//!< Shows an editor where forest scene can be defined
 	bool							_showRenderingSettings;				//!< Displays a window which allows the user to modify the rendering parameters
+	bool							_showSceneObjects;					//!< Controls the rendering of a window that displays the configuration of each scene object
 	bool							_showScreenshotSettings;			//!< Shows a window which allows to take an screenshot at any size
 
 	// BRDF
-	std::vector<BRDFShader::ShaderVariable>* _brdfParameters;		//!<
+	std::vector<BRDFShader::ShaderVariable>*	_brdfParameters;		//!<
 	BRDFScene*									_brdfScene;				//!<
+	std::vector<Model3D::ModelComponent*>*		_sceneComponents;		//!<	
 	Model3D::BRDFType*							_sphereBRDF;			//!<
 
 	// Forest Editor
@@ -83,6 +85,11 @@ protected:
 	void renderBRDFParameters();
 
 	/**
+	*	@brief 
+	*/
+	void renderObjectPanel(Model3D::ModelComponent* modelComponent);
+
+	/**
 	*	@brief Renders a help icon with a message.
 	*/
 	static void renderHelpMarker(const char* message);
@@ -111,6 +118,11 @@ protected:
 	*	@brief Shows a window with general rendering configuration.
 	*/
 	void showRenderingSettings();
+
+	/**
+	*	@brief Shows a window where scene objects are displayed to either active or disable them. 
+	*/
+	void showSceneObjects();
 
 	/**
 	*	@brief Shows a window with framebuffer and screenshot configuration.

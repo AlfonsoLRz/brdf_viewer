@@ -3,6 +3,7 @@
 #include "Graphics/Application/SSAOScene.h"
 #include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/BRDFSphere.h"
+#include "Graphics/Core/CADModel.h"
 #include "Graphics/Core/PGLLPointCloud.h"
 #include "Graphics/Core/PlanarSurface.h"
 
@@ -49,17 +50,18 @@ protected:
 protected:
 	// Models
 	BRDFSphere*		_brdfSphere;							//!<
+	CADModel*		_cadModel;								//!<	
 	VAO*			_lineVAO;								//!<
 	PGLLPointCloud* _pgllPointCloud;						//!<
 	PlanarSurface*	_plane;									//!<
 
 	// Shaders
-	BRDFShader*		_pointCloudShader;						//!<
-	BRDFShader*		_triangleMeshShader;					//!<
-	BRDFShader*		_triangleMeshPositionShader;			//!<
-	BRDFShader*		_triangleMeshNormalShader;				//!<
-	BRDFShader*		_shadowsShader;							//!<
-	BRDFShader*		_wireframeShader;						//!<
+	BRDFShader*		_brdfPointCloudShader;						//!<
+	BRDFShader*		_brdfTriangleMeshShader;					//!<
+	BRDFShader*		_brdfTriangleMeshPositionShader;			//!<
+	BRDFShader*		_brdfTriangleMeshNormalShader;				//!<
+	BRDFShader*		_brdfShadowsShader;							//!<
+	BRDFShader*		_brdfWireframeShader;						//!<
 
 protected:
 	/**
@@ -182,6 +184,11 @@ public:
 	void updateBRDF(Model3D::BRDFType newBRDF);
 
 	// ------- Getters --------
+
+	/**
+	*	@return  
+	*/
+	std::vector<Model3D::ModelComponent*>* getSceneComponents() { return _sceneGroup->getRegisteredModelComponents(); }
 
 	/**
 	*	@return
