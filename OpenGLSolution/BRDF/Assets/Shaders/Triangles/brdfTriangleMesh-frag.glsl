@@ -6,71 +6,70 @@
 const float EPSILON = 0.0000001f;
 const float CUTOFF = .8f;
 
-
 // ------------ Geometry ------------
-in vec3 worldPosition;
-in vec3 position;
-in vec3 normal;
-in vec2 textCoord;
-in vec4 shadowCoord;
+in vec3				worldPosition;
+in vec3				position;
+in vec3				normal;
+in vec2				textCoord;
+in vec4				shadowCoord;
 
 // ------------ Lighting ------------
-uniform vec3 lightPosition;
-uniform vec3 lightDirection;
+uniform vec3		lightPosition;
+uniform vec3		lightDirection;
 
 // ----------- Materials ------------
-uniform sampler2D texKadSampler;
-uniform sampler2D texKsSampler;
-uniform vec2  heightBoundaries;
-uniform float materialScattering;				// Substitutes ambient lighting
-uniform float shininess;
+uniform sampler2D	texKadSampler;
+uniform sampler2D	texKsSampler;
+uniform vec2		heightBoundaries;
+uniform float		materialScattering;				// Substitutes ambient lighting
+uniform float		shininess;
 
 // ----------- Texture selection
-subroutine vec4 kadType();
-subroutine uniform kadType kadUniform;
+subroutine vec4		kadType();
+subroutine uniform	kadType kadUniform;
 
-subroutine vec4 semiTransparentType(const vec4 color);
-subroutine uniform semiTransparentType semiTransparentUniform;
+subroutine vec4		semiTransparentType(const vec4 color);
+subroutine uniform	semiTransparentType semiTransparentUniform;
 
-uniform sampler2D texSemiTransparentSampler;
+uniform sampler2D	texSemiTransparentSampler;
 
 // ----------- Lighting -------------
-subroutine vec3 lightType(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor);
-subroutine uniform lightType lightUniform;
+subroutine vec3		lightType(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor);
+subroutine uniform	lightType lightUniform;
 
 // Colors
-uniform vec3 Ia;
-uniform vec3 Id;
-uniform vec3 Is;
+uniform vec3		Ia;
+uniform vec3		Id;
+uniform vec3		Is;
 
 // Spot light
-uniform float cosUmbra, cosPenumbra;      // Ranged angle where light just fades out
-uniform float exponentS;
+uniform float		cosUmbra, cosPenumbra;      // Ranged angle where light just fades out
+uniform float		exponentS;
 
 // ----- Lighting attenuation -----
-subroutine float attenuationType(const float distance);
-subroutine uniform attenuationType attenuationUniform;
+subroutine float	attenuationType(const float distance);
+subroutine uniform	attenuationType attenuationUniform;
 
 // Basic model
-uniform float c1, c2, c3;
+uniform float		c1, c2, c3;
 
 // Ranged distance model
-uniform float minDistance, maxDistance;
+uniform float		minDistance, maxDistance;
 
 // Pixar model
-uniform float fMax;
-uniform float distC, fC;
-uniform float exponentSE;
-uniform float k0, k1;
+uniform float		fMax;
+uniform float		distC, fC;
+uniform float		exponentSE;
+uniform float		k0, k1;
 
 // ---------------- Shadows ---------------
 
-subroutine void depthTextureType(out float shadowDiffuseFactor, out float shadowSpecFactor);
-subroutine uniform depthTextureType depthTextureUniform;
+subroutine void		depthTextureType(out float shadowDiffuseFactor, out float shadowSpecFactor);
+subroutine uniform	depthTextureType depthTextureUniform;
 
-uniform float shadowMaxIntensity, shadowMinIntensity;						// Color range
-uniform float shadowRadius;	
-uniform sampler3D texOffset;
+uniform float		shadowMaxIntensity, shadowMinIntensity;	
+uniform float		shadowRadius;	
+uniform sampler3D	texOffset;
 uniform sampler2DShadow texShadowMapSampler;
 
 

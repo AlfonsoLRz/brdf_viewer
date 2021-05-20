@@ -6,14 +6,16 @@
 // [Initialization of static attributes]
 
 const std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::BRDF_MODULE_PATH = BRDFShader::getBRDFModulePath();
-std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::_brdfContent;
+std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::_brdfReflectanceContent;
 std::unordered_map<Model3D::BRDFType, std::vector<BRDFShader::ShaderVariable>> BRDFShader::_brdfVariables;
 
 const std::string BRDFShader::INCLUDE_BRDF_HEADER = "INCLUDE BRDF";
 const std::string BRDFShader::PARAMETERS_BEGIN = "::begin parameters";
 const std::string BRDFShader::PARAMETERS_END = "::end parameters";
-const std::string BRDFShader::SHADER_BEGIN = "::begin shader";
-const std::string BRDFShader::SHADER_END = "::end shader";
+const std::string BRDFShader::REFLECTANCE_SHADER_BEGIN = "::begin reflectanceShader";
+const std::string BRDFShader::REFLECTANCE_SHADER_END = "::end reflectanceShader";
+const std::string BRDFShader::RENDERING_SHADER_BEGIN = "::begin renderingShader";
+const std::string BRDFShader::RENDERING_SHADER_END = "::end renderingShader";
  
 // [Public methods]
 
@@ -27,7 +29,7 @@ BRDFShader::~BRDFShader()
 
 void BRDFShader::clearCache()
 {
-	_brdfContent.clear();
+	_brdfReflectanceContent.clear();
 	_brdfVariables.clear();
 }
 
@@ -247,15 +249,25 @@ void BRDFShader::findParameters(const std::string& fileContent, std::vector<Shad
 
 void BRDFShader::findShader(const std::string& fileContent, std::string& shaderContent)
 {
-	const std::size_t beginPosition = fileContent.find(SHADER_BEGIN);
-	const std::size_t endPosition = fileContent.find(SHADER_END);
+	const std::size_t beginPosition = fileContent.find(REFLECTANCE_SHADER_BEGIN);
+	const std::size_t endPosition = fileContent.find(REFLECTANCE_SHADER_END);
 
 	if ((beginPosition == std::string::npos) || (endPosition == std::string::npos))				// Incorrect syntax
 	{
 		return;
 	}
 
-	shaderContent = fileContent.substr(beginPosition + SHADER_BEGIN.size(), endPosition - beginPosition - SHADER_END.size() - 2);
+	shaderContent = fileContent.substr(beginPosition + REFLECTANCE_SHADER_BEGIN.size(), endPosition - beginPosition - REFLECTANCE_SHADER_END.size() - 2);
+
+	const std::string subroutineString = "\nsubroutine(brdfType)\n";
+	const std::size_t brdfUniformPosition = shaderContent.find(Model3D::BRDF_UNIFORM);
+
+	if (brdfUniformPosition != std::string::npos)
+	{
+		shaderContent.insert(brdfUniformPosition - 5, subroutineString.c_str());
+	}
+
+	shaderContent = fileContent.substr(beginPosition + RENDERING_SHADER_BEGIN.size(), endPosition - beginPosition - RENDERING_SHADER_END.size() - 2);
 
 	const std::string subroutineString = "\nsubroutine(brdfType)\n";
 	const std::size_t brdfUniformPosition = shaderContent.find(Model3D::BRDF_UNIFORM);
@@ -286,9 +298,9 @@ bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType
 
 	// Check if BRDF was previously loaded
 	std::string brdfShaderString;
-	auto shaderIterator = _brdfContent.find(brdfType);
+	auto shaderIterator = _brdfReflectanceContent.find(brdfType);
 
-	if (shaderIterator != _brdfContent.end())
+	if (shaderIterator != _brdfReflectanceContent.end())
 	{
 		brdfShaderString = shaderIterator->second;
 	}
@@ -315,7 +327,7 @@ bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType
 		this->joinParameterShader(variables, brdfShaderContent, brdfShaderString);
 
 		// Save BRDF shader for later shaders
-		_brdfContent[brdfType] = brdfShaderString;
+		_brdfReflectanceContent[brdfType] = brdfShaderString;
 		_brdfVariables[brdfType] = variables;
 	}
 

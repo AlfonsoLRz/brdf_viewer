@@ -64,10 +64,12 @@ protected:
 	const static std::unordered_map<Model3D::BRDFType, std::string> BRDF_MODULE_PATH;			//!<
 	const static std::string INCLUDE_BRDF_HEADER;												//!<
 	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;									//!<
-	const static std::string SHADER_BEGIN, SHADER_END;											//!<
+	const static std::string REFLECTANCE_SHADER_BEGIN, REFLECTANCE_SHADER_END;					//!<
+	const static std::string RENDERING_SHADER_BEGIN, RENDERING_SHADER_END;						//!<
 
 protected:
-	static std::unordered_map<Model3D::BRDFType, std::string> _brdfContent;						//!<
+	static std::unordered_map<Model3D::BRDFType, std::string> _brdfReflectanceContent;			//!<
+	static std::unordered_map<Model3D::BRDFType, std::string> _brdfRenderingContent;			//!<
 	static std::unordered_map<Model3D::BRDFType, std::vector<ShaderVariable>> _brdfVariables;	//!<
 
 protected:

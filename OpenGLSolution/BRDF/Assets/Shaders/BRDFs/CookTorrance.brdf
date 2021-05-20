@@ -11,7 +11,7 @@ bool include_F 1
 bool include_G 1
 ::end parameters
 
-::begin shader
+::begin reflectanceShader
 
 vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 {
@@ -22,4 +22,4 @@ vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 	return N * NdotL;
 }
 
-::end shader
+::end reflectanceShader

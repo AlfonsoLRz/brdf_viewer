@@ -8,7 +8,7 @@ analytic
 float n 1 1000 100
 ::end parameters
 
-::begin shader
+::begin reflectanceShader
 
 // Phong BRDF
 
@@ -21,4 +21,4 @@ vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 	return N * intensity;
 }
 
-::end shader
+::end reflectanceShader
