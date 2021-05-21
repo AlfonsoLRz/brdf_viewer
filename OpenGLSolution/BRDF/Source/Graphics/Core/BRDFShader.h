@@ -66,6 +66,8 @@ protected:
 	const static std::string PARAMETERS_BEGIN, PARAMETERS_END;									//!<
 	const static std::string REFLECTANCE_SHADER_BEGIN, REFLECTANCE_SHADER_END;					//!<
 	const static std::string RENDERING_SHADER_BEGIN, RENDERING_SHADER_END;						//!<
+	const static std::string SUBROUTINE_REFLECTANCE_HEADER;										//!<
+	const static std::string SUBROUTINE_RENDERING_HEADER;										//!<
 
 protected:
 	static std::unordered_map<Model3D::BRDFType, std::string> _brdfReflectanceContent;			//!<
@@ -89,7 +91,7 @@ protected:
 	/**
 	*	@brief Seeks parameters which needs to be added to the interface.
 	*/
-	void findShader(const std::string& fileContent, std::string& shaderContent);
+	void findShader(const std::string& fileContent, std::string& shaderContent, const std::string& header, const std::string& tail, const std::string& subroutineHeader);
 
 	/**
 	*	@return Hash table with path in system for each BRDF module. 
@@ -99,12 +101,17 @@ protected:
 	/**
 	*	@brief Replaces BRDF include line for its BRDF implementation. 
 	*/
-	bool includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType brdfType);
+	bool includeShaderBRDF(std::string& shaderContent, const GLenum shaderType, Model3D::BRDFType brdfType);
 
 	/**
 	*	@brief  
 	*/
 	void joinParameterShader(std::vector<BRDFShader::ShaderVariable>& parameters, const std::string& shaderContent, std::string& result);
+
+	/**
+	*	@brief Loads a new BRDF module, both as reflectance and rendering function. 
+	*/
+	bool loadBRDFModule(Model3D::BRDFType brdfType);
 
 public:
 	/**

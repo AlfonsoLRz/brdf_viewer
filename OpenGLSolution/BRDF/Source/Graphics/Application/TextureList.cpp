@@ -5,8 +5,8 @@
 
 std::unordered_map<uint16_t, std::string> TextureList::TEXTURE_PATH
 {
-	// TERRAIN_SCENE
-	{CGAppEnum::TEXTURE_HEIGHT, "Assets/Textures/Height/HeightMap.png"}
+	{CGAppEnum::TEXTURE_HEIGHT, "Assets/Textures/Height/HeightMap.png"},
+	{CGAppEnum::TEXTURE_CHECKER, "Assets/Textures/Test/Checker.png"}
 };
 
 /// [Protected methods]

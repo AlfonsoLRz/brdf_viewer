@@ -262,7 +262,7 @@ void GUI::showRenderingSettings()
 				ImGui::EndTabItem();
 			}
 
-			if (ImGui::BeginTabItem("BRDF"))
+			if (ImGui::BeginTabItem("BRDF Rendering"))
 			{
 				this->leaveSpace(1);
 
@@ -284,6 +284,11 @@ void GUI::showRenderingSettings()
 
 					ImGui::PopStyleColor(3);
 					ImGui::PopID();
+					ImGui::Separator();
+
+					this->leaveSpace(2);
+					ImGui::SliderFloat3("Light Direction", &_renderingParams->_L[0], -1.0f, 1.0f);
+					ImGui::SliderFloat3("View Direction", &_renderingParams->_V[0], -1.0f, 1.0f);
 				}
 
 				this->leaveSpace(2);

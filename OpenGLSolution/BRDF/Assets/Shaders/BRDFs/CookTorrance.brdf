@@ -5,10 +5,10 @@ analytic
 # [type] [name] [min val] [max val] [default val]
 
 ::begin parameters
-float m 0.001 .3 .1
-float f0 0 1 .1
-bool include_F 1
-bool include_G 1
+//float m 0.001 .3 .1
+//float f0 0 1 .1
+//bool include_F 1
+//bool include_G 1
 ::end parameters
 
 ::begin reflectanceShader
@@ -23,3 +23,16 @@ vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 }
 
 ::end reflectanceShader
+
+::begin renderingShader
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+{
+	vec3 H = normalize(L + V);
+	float NdotL = max(pow(dot(N, H), 4.0f), .1f);
+	float Rs = 0.0;
+	
+	return N * NdotL;
+}
+
+::end renderingShader

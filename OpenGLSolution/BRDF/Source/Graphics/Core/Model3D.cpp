@@ -385,10 +385,16 @@ void Model3D::setBRDFUniform(ShaderProgram* shader, const const RendEnum::RendSh
 	if (modelComponent->_brdf == BRDFType::NONE)
 	{
 		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+		shader->setSubroutineUniform(GL_FRAGMENT_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
 	}
 	else
 	{
+		RenderingParameters* rendParams = Renderer::getInstance()->getRenderingParameters();
+		
 		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, BRDF_UNIFORM);
+		shader->setSubroutineUniform(GL_FRAGMENT_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+		shader->setUniform("lightDirection", glm::normalize(rendParams->_L));
+		shader->setUniform("viewDirection", glm::normalize(rendParams->_V));
 
 		// Indicate values for BRDF uniforms
 		std::vector<BRDFShader::ShaderVariable>* parameters = BRDFShader::getParameters(modelComponent->_brdf);

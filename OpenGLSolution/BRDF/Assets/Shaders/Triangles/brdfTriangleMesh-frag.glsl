@@ -37,6 +37,9 @@ uniform sampler2D	texSemiTransparentSampler;
 subroutine vec3		lightType(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor);
 subroutine uniform	lightType lightUniform;
 
+subroutine vec3		brdfType(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V);
+subroutine uniform	brdfType brdfUniform;
+
 // Colors
 uniform vec3		Ia;
 uniform vec3		Id;
@@ -118,6 +121,24 @@ vec3 getSpecular(const vec3 fragKs, const float dotHN)
 	return Is * fragKs * pow(max(dotHN, 0.0f), shininess);
 }
 
+// BRDF
+
+INCLUDE BRDF
+
+subroutine(brdfType)
+vec3 noBRDF(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V)
+{
+	const vec3 h = normalize(V + L);						// Halfway vector
+
+	const float dotLN = clamp(dot(L, N), -1.0f, 1.0f);      // Prevents Nan values from acos
+	const float dotHN = dot(h, N);
+
+	const vec3 diffuse = getDiffuse(kad, dotLN);
+	const vec3 specular = getSpecular(ks, dotHN);
+
+	return shadowDiffuse * (diffuse + shadowSpecular * specular);
+}
+
 // Computes the color related to any light source. Receives the attenuation variables from shadows
 vec3 getDiffuseAndSpecular(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor, const vec3 lightDirection)
 {
@@ -149,7 +170,11 @@ vec3 ambientLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, 
 subroutine(lightType)
 vec3 pointLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor)
 {
-	const vec3 diffuseSpecular = getDiffuseAndSpecular(fragKad, fragKs, fragNormal, shadowDiffuseFactor, shadowSpecFactor, lightPosition - position);
+	const vec3 n = normalize(fragNormal);
+	const vec3 l = normalize(lightPosition - position);
+	const vec3 v = normalize(-position);
+
+	const vec3 diffuseSpecular = brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v);
 
 	const float distance = distance(lightPosition, position);
 	const float attenuation = attenuationUniform(distance);
@@ -160,7 +185,11 @@ vec3 pointLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, co
 subroutine(lightType)
 vec3 directionalLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor)
 {
-	return getDiffuseAndSpecular(fragKad, fragKs, fragNormal, shadowDiffuseFactor, shadowSpecFactor, lightDirection);
+	const vec3 n = normalize(fragNormal);
+	const vec3 l = normalize(lightDirection);
+	const vec3 v = normalize(-position);
+
+	return brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v);
 }
 
 subroutine(lightType)

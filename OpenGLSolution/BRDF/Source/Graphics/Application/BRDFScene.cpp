@@ -46,6 +46,7 @@ void BRDFScene::updateBRDF(Model3D::BRDFType newBRDF)
 
 	// Change sphere for rendering
 	_brdfSphere->getModelCompent(0)->_brdf = newBRDF;
+	_cadModel->getModelCompent(0)->_brdf = newBRDF;
 
 	// Delete previous shaders
 	delete _brdfPointCloudShader;
@@ -105,7 +106,7 @@ void BRDFScene::loadDefaultLights()
 
 	Light* pointLight_02 = new Light();
 	pointLight_02->setLightType(Light::POINT_LIGHT);
-	pointLight_02->setPosition(vec3(-2.86f, 2.0f, -0.13f));
+	pointLight_02->setPosition(vec3(-2.86f, 2.0f, -2.13f));
 	pointLight_02->setId(vec3(0.35f));
 	pointLight_02->setIs(vec3(0.0f));
 
@@ -123,6 +124,7 @@ void BRDFScene::loadDefaultLights()
 	sunLight->setIs(vec3(0.0f));
 	sunLight->castShadows(true);
 	sunLight->setShadowIntensity(0.2f, 1.0f);
+	sunLight->setShadowRadius(.001f);
 	sunLight->setBlurFilterSize(5);
 
 	_lights.push_back(std::unique_ptr<Light>(sunLight));
@@ -152,6 +154,9 @@ void BRDFScene::loadCameras()
 		this->loadDefaultCamera(camera);
 	}
 
+	camera->setPosition(vec3(1.70015f, 1.45277f, 0.683818f));
+	camera->setLookAt(vec3(-6.92137f, -2.67601f, -2.16847f));
+
 	_cameraManager->insertCamera(camera);
 }
 
@@ -172,8 +177,8 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(20, 20, 10, 10, 1.0f, 1.0f);
-		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CAD_WHITE));
+		_plane = new PlanarSurface(8, 8, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
+		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
 		_plane->setName("Planar Surface", 0);
 		_sceneGroup->addComponent(_plane);
 
@@ -186,12 +191,12 @@ void BRDFScene::loadModels()
 		_cadModel->setName("3D Model", 0);
 		_sceneGroup->addComponent(_cadModel);
 
-		_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);
-		_sceneGroup->addComponent(_pgllPointCloud);
+		//_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);
+		//_sceneGroup->addComponent(_pgllPointCloud);
 	}
 
 	SSAOScene::loadModels();
-	this->updateBRDF(Model3D::COOK_TORRANCE);
+	this->updateBRDF(Model3D::PHONG);
 }
 
 bool BRDFScene::readCameraFromSettings(Camera* camera)

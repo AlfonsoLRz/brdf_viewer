@@ -5,8 +5,9 @@
 
 // [Initialization of static attributes]
 
-const std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::BRDF_MODULE_PATH = BRDFShader::getBRDFModulePath();
-std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::_brdfReflectanceContent;
+const std::unordered_map<Model3D::BRDFType, std::string>	BRDFShader::BRDF_MODULE_PATH = BRDFShader::getBRDFModulePath();
+std::unordered_map<Model3D::BRDFType, std::string>			BRDFShader::_brdfReflectanceContent;
+std::unordered_map<Model3D::BRDFType, std::string>			BRDFShader::_brdfRenderingContent;
 std::unordered_map<Model3D::BRDFType, std::vector<BRDFShader::ShaderVariable>> BRDFShader::_brdfVariables;
 
 const std::string BRDFShader::INCLUDE_BRDF_HEADER = "INCLUDE BRDF";
@@ -16,6 +17,8 @@ const std::string BRDFShader::REFLECTANCE_SHADER_BEGIN = "::begin reflectanceSha
 const std::string BRDFShader::REFLECTANCE_SHADER_END = "::end reflectanceShader";
 const std::string BRDFShader::RENDERING_SHADER_BEGIN = "::begin renderingShader";
 const std::string BRDFShader::RENDERING_SHADER_END = "::end renderingShader";
+const std::string BRDFShader::SUBROUTINE_REFLECTANCE_HEADER = "\nsubroutine(brdfType)\n";
+const std::string BRDFShader::SUBROUTINE_RENDERING_HEADER = "\nsubroutine(brdfType)\n";
  
 // [Public methods]
 
@@ -136,6 +139,8 @@ GLuint BRDFShader::compileShader(const char* filename, const GLenum shaderType, 
 		return 0;
 	}
 
+	this->loadBRDFModule(brdfType);
+
 	std::string shaderSourceString;
 	if (!loadFileContent(std::string(filename), shaderSourceString))						// Read shader code
 	{
@@ -149,7 +154,7 @@ GLuint BRDFShader::compileShader(const char* filename, const GLenum shaderType, 
 		return 0;
 	}
 
-	if (!includeShaderBRDF(shaderSourceString, brdfType))
+	if (!includeShaderBRDF(shaderSourceString, shaderType, brdfType))
 	{
 		fprintf(stderr, "Cannot include the BRDF shader.\n");
 		return 0;
@@ -247,34 +252,23 @@ void BRDFShader::findParameters(const std::string& fileContent, std::vector<Shad
 	}
 }
 
-void BRDFShader::findShader(const std::string& fileContent, std::string& shaderContent)
+void BRDFShader::findShader(const std::string& fileContent, std::string& shaderContent, const std::string& header, const std::string& tail, const std::string& subroutineHeader)
 {
-	const std::size_t beginPosition = fileContent.find(REFLECTANCE_SHADER_BEGIN);
-	const std::size_t endPosition = fileContent.find(REFLECTANCE_SHADER_END);
+	const std::size_t beginPosition = fileContent.find(header);
+	const std::size_t endPosition = fileContent.find(tail);
 
 	if ((beginPosition == std::string::npos) || (endPosition == std::string::npos))				// Incorrect syntax
 	{
 		return;
 	}
 
-	shaderContent = fileContent.substr(beginPosition + REFLECTANCE_SHADER_BEGIN.size(), endPosition - beginPosition - REFLECTANCE_SHADER_END.size() - 2);
+	shaderContent = fileContent.substr(beginPosition + header.size(), endPosition - beginPosition - tail.size() - 2);
 
-	const std::string subroutineString = "\nsubroutine(brdfType)\n";
 	const std::size_t brdfUniformPosition = shaderContent.find(Model3D::BRDF_UNIFORM);
 
 	if (brdfUniformPosition != std::string::npos)
 	{
-		shaderContent.insert(brdfUniformPosition - 5, subroutineString.c_str());
-	}
-
-	shaderContent = fileContent.substr(beginPosition + RENDERING_SHADER_BEGIN.size(), endPosition - beginPosition - RENDERING_SHADER_END.size() - 2);
-
-	const std::string subroutineString = "\nsubroutine(brdfType)\n";
-	const std::size_t brdfUniformPosition = shaderContent.find(Model3D::BRDF_UNIFORM);
-
-	if (brdfUniformPosition != std::string::npos)
-	{
-		shaderContent.insert(brdfUniformPosition - 5, subroutineString.c_str());
+		shaderContent.insert(brdfUniformPosition - 5, subroutineHeader.c_str());
 	}
 }
 
@@ -290,7 +284,7 @@ std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::getBRDFModulePath
 	return brdfModulePath;
 }
 
-bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType brdfType)
+bool BRDFShader::includeShaderBRDF(std::string& shaderContent, const GLenum shaderType, Model3D::BRDFType brdfType)
 {
 	// Check if a include line is active
 	size_t headerPosition = shaderContent.find(INCLUDE_BRDF_HEADER);
@@ -298,38 +292,20 @@ bool BRDFShader::includeShaderBRDF(std::string& shaderContent, Model3D::BRDFType
 
 	// Check if BRDF was previously loaded
 	std::string brdfShaderString;
-	auto shaderIterator = _brdfReflectanceContent.find(brdfType);
+	auto dataStructure	= shaderType == GL_VERTEX_SHADER ? _brdfReflectanceContent : _brdfRenderingContent;
+	auto shaderIterator = dataStructure.find(brdfType);
 
-	if (shaderIterator != _brdfReflectanceContent.end())
+	if (shaderIterator != dataStructure.end())
 	{
 		brdfShaderString = shaderIterator->second;
 	}
 	else
 	{
-		auto it = BRDF_MODULE_PATH.find(brdfType);
-		if (it == BRDF_MODULE_PATH.end() || !fileExists(it->second))														// Library refers to a new file, does it exist?
-		{
-			return false;
-		}
-
-		// Read content from BRDF shader
-		std::string fileContent, brdfShaderContent;
-		std::vector<ShaderVariable> variables;
-		this->loadFileContent(it->second, fileContent);
-
-		// Find parameters from loaded string
-		BRDFShader::findParameters(fileContent, variables);
-
-		// Find shader implementation
-		BRDFShader::findShader(fileContent, brdfShaderContent);
-
-		// Gather both uniform parameters and BRDF behaviour
-		this->joinParameterShader(variables, brdfShaderContent, brdfShaderString);
-
-		// Save BRDF shader for later shaders
-		_brdfReflectanceContent[brdfType] = brdfShaderString;
-		_brdfVariables[brdfType] = variables;
+		return false;
 	}
+
+	// Gather both uniform parameters and BRDF behaviour
+	this->joinParameterShader(_brdfVariables[brdfType], dataStructure[brdfType], brdfShaderString);
 
 	shaderContent.erase(shaderContent.begin() + headerPosition, shaderContent.begin() + headerPosition + INCLUDE_BRDF_HEADER.size());			// Replace string in shader code
 	shaderContent.insert(headerPosition, brdfShaderString.c_str());
@@ -347,6 +323,41 @@ void BRDFShader::joinParameterShader(std::vector<BRDFShader::ShaderVariable>& pa
 	}
 
 	result = parametersString + shaderContent;
+}
+
+bool BRDFShader::loadBRDFModule(Model3D::BRDFType brdfType)
+{
+	// Check if BRDF was previously loaded
+	std::string brdfVertexShaderString, brdfFragmentShaderString;
+	auto shaderIterator = _brdfReflectanceContent.find(brdfType);
+
+	if (shaderIterator == _brdfReflectanceContent.end())
+	{
+		auto it = BRDF_MODULE_PATH.find(brdfType);
+		if (it == BRDF_MODULE_PATH.end() || !fileExists(it->second))														// Library refers to a new file, does it exist?
+		{
+			return false;
+		}
+
+		// Read content from BRDF shader
+		std::string fileContent, brdfVertexShaderContent, brdfFragmentShaderContent;
+		std::vector<ShaderVariable> variables;
+		this->loadFileContent(it->second, fileContent);
+
+		// Find parameters from loaded string
+		BRDFShader::findParameters(fileContent, variables);
+
+		// Find shader implementation
+		BRDFShader::findShader(fileContent, brdfVertexShaderContent, REFLECTANCE_SHADER_BEGIN, REFLECTANCE_SHADER_END, SUBROUTINE_REFLECTANCE_HEADER);
+		BRDFShader::findShader(fileContent, brdfFragmentShaderContent, RENDERING_SHADER_BEGIN, RENDERING_SHADER_END, SUBROUTINE_RENDERING_HEADER);
+
+		// Save BRDF shader for later shaders
+		_brdfReflectanceContent[brdfType] = brdfVertexShaderContent;
+		_brdfRenderingContent[brdfType] = brdfFragmentShaderContent;
+		_brdfVariables[brdfType] = variables;
+	}
+
+	return true;
 }
 
 /// Shader variable

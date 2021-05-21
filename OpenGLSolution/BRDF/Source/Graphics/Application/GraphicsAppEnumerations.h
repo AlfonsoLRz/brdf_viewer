@@ -40,8 +40,8 @@ struct CGAppEnum
 	// Application prebuilt materials
 	enum MaterialNames : uint16_t
 	{
-		// CAD 
 		MATERIAL_CAD_WHITE,
+		MATERIAL_CHECKER,
 		MATERIAL_HEIGHT
 	};
 
@@ -52,6 +52,7 @@ struct CGAppEnum
 		TEXTURE_BLUE,
 		TEXTURE_BLUE_SKY,
 		TEXTURE_BLACK,
+		TEXTURE_CHECKER,
 		TEXTURE_GOLD,
 		TEXTURE_GOLD_SHININESS,
 		TEXTURE_GRAY_64,

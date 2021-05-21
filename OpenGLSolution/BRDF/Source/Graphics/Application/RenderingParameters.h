@@ -25,7 +25,6 @@ public:
 
 	// Lighting
 	float							_materialScattering;					//!< Ambient light substitute
-	float							_occlusionMinIntensity;					//!< Mininum value for occlusion factor (max is 1 => no occlusion)
 
 	// BRDF
 	int								_brdfType;								//!< Type of BRDF that adopt the sphere
@@ -65,10 +64,10 @@ public:
 
 		_backgroundColor(0.4f, 0.4f, 0.4f),
 
-		_materialScattering(1.0f),
+		_materialScattering(1.5f),
 
 		_brdfType(Model3D::IDEAL_DIFFUSE),
-		_L(glm::normalize(vec3(1.0f, 1.0f, .0f))),
+		_L(glm::normalize(vec3(-1.0f, 1.0f, .0f))),
 		_V(glm::normalize(vec3(1.0f, 1.0f, .0f))),
 
 		_screenshotFilenameBuffer("Screenshot.png"),

@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include "Graphics/Application/MaterialList.h"
+#include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/ShaderList.h"
 #include "Graphics/Core/VAO.h"
 #include "Utilities/FileManagement.h"
@@ -404,6 +405,43 @@ void CADModel::readClassFile(const std::string& filename, std::map<std::string, 
 	}
 
 	inputStream.close();
+}
+
+void CADModel::setBRDFUniform(ShaderProgram* shader, const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent)
+{
+	if (modelComponent->_brdf == BRDFType::NONE)
+	{
+		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+		shader->setSubroutineUniform(GL_FRAGMENT_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+	}
+	else
+	{
+		shader->setSubroutineUniform(GL_VERTEX_SHADER, BRDF_UNIFORM_NAME, NO_BRDF_UNIFORM);
+		shader->setSubroutineUniform(GL_FRAGMENT_SHADER, BRDF_UNIFORM_NAME, BRDF_UNIFORM);
+
+		// Indicate values for BRDF uniforms
+		std::vector<BRDFShader::ShaderVariable>* parameters = BRDFShader::getParameters(modelComponent->_brdf);
+
+		for (BRDFShader::ShaderVariable& variable : *parameters)
+		{
+			if (variable.isBoolean())
+			{
+				shader->setUniform(variable._name, variable._booleanValue);
+			}
+
+			if (variable.isInteger())
+			{
+				shader->setUniform(variable._name, variable._integerValue);
+			}
+
+			if (variable.isFloat())
+			{
+				shader->setUniform(variable._name, variable._floatValue);
+			}
+		}
+	}
+
+	shader->applyActiveSubroutines();
 }
 
 void CADModel::setVAOData(ModelComponent* modelComp)

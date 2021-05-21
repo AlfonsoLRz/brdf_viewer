@@ -34,6 +34,10 @@ void MaterialList::defineMaterials()
 	_materialSpecs[CGAppEnum::MATERIAL_CAD_WHITE]._texture[Texture::KS_TEXTURE] = CGAppEnum::TEXTURE_BLACK;
 	_materialSpecs[CGAppEnum::MATERIAL_CAD_WHITE]._shininess = 100.0f;
 
+	_materialSpecs[CGAppEnum::MATERIAL_CHECKER]._texture[Texture::KAD_TEXTURE] = CGAppEnum::TEXTURE_CHECKER;
+	_materialSpecs[CGAppEnum::MATERIAL_CHECKER]._texture[Texture::KS_TEXTURE] = CGAppEnum::TEXTURE_GRAY_64;
+	_materialSpecs[CGAppEnum::MATERIAL_CHECKER]._shininess = 50.0f;
+
 	_materialSpecs[CGAppEnum::MATERIAL_HEIGHT]._texture[Texture::KAD_TEXTURE] = CGAppEnum::TEXTURE_HEIGHT;
 	_materialSpecs[CGAppEnum::MATERIAL_HEIGHT]._texture[Texture::KS_TEXTURE] = CGAppEnum::TEXTURE_GRAY_64;
 	_materialSpecs[CGAppEnum::MATERIAL_HEIGHT]._shininess = 100.0f;

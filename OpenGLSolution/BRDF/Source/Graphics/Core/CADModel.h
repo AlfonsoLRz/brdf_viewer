@@ -76,6 +76,11 @@ protected:
 	void readClassFile(const std::string& filename, std::map<std::string, std::string>& keyMap, std::string& defaultClass);
 
 	/**
+	*	@brief
+	*/
+	virtual void setBRDFUniform(ShaderProgram* shader, const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent);
+
+	/**
 	*	@brief Communicates the model structure to GPU for rendering purposes.
 	*/
 	void setVAOData(ModelComponent* modelComp);
