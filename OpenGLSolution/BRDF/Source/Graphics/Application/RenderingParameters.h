@@ -16,7 +16,7 @@ struct RenderingParameters
 {
 
 public:
-	inline static const char* BRDF_STR[Model3D::NUM_BRDF_TYPES] = { "None", "Ideal Diffuse", "Oren Nayar", "Phong", "Cook Torrance" };
+	inline static const char* BRDF_STR[Model3D::NUM_BRDF_TYPES] = { "None", "Ideal Diffuse", "Oren Nayar", "Phong", "Cook Torrance", "Minnaert", "Ward Anisotropic" };
 
 public:
 	// Application

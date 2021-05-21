@@ -1,0 +1,40 @@
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin parameters
+float Power 1 1000 100
+::end parameters
+
+::begin reflectanceShader
+
+vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+    const vec3 h            = VECTOR_H(reflectDirection, -ray.direction);
+	const vec3 binormal     = normalize(cross(compactCollision[index].tangent, compactCollision[index].normal));	
+    const float dotLN       = clamp(dot(-ray.direction, compactCollision[index].normal), .0f, 1.0f);
+	const float dotNV       = clamp(dot(compactCollision[index].normal, reflectDirection), .0f, 1.0f);
+	const float dotHX       = dot(h, compactCollision[index].tangent);
+	const float dotHY       = dot(h, binormal);	
+    const float dotHN       = dot(h, compactCollision[index].normal);
+	    
+	const vec2 alphaTerm    = vec2(dotHX / ALPHA.x, dotHY / ALPHA.y);
+	const float expFactor   = -2.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (1.0f + dotHN));
+
+	return KdKs.y * (1.0f / (4.0f * PI * ALPHA.x * ALPHA.y * sqrt(max(dotLN * dotNV, .1f)))) * exp(expFactor);
+}
+
+::end reflectanceShader
+
+::begin renderingShader
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+{
+	vec3 R = reflect(L, N);
+    float D = pow(max(.0f, dot(R, V)), Power);
+    float dotLN = dot(L, N);
+
+    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * D;
+}
+
+::end renderingShader

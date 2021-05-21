@@ -2,9 +2,8 @@
 
 // ********** PARAMETERS & VARIABLES ***********
 
-// ------------ Constraints ------------
-const float EPSILON = 0.0000001f;
-const float CUTOFF = .8f;
+#include <Assets/Shaders/Compute/Templates/constraints.glsl>
+#define CUTOFF .8f
 
 // ------------ Geometry ------------
 in vec3				worldPosition;

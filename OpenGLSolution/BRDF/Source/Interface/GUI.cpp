@@ -264,10 +264,16 @@ void GUI::showRenderingSettings()
 
 			if (ImGui::BeginTabItem("BRDF Rendering"))
 			{
+				static int brdf = *_sphereBRDF;
+				
 				this->leaveSpace(1);
 
 				ImGui::PushItemWidth(200.0f);
-				ImGui::Combo("Visualization", (int*)_sphereBRDF, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR));
+				if (ImGui::Combo("Visualization", &brdf, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR)))
+				{
+					_brdfScene->updateBRDF(static_cast<Model3D::BRDFType>(brdf));
+					_brdfParameters = BRDFShader::getParameters(*_sphereBRDF);
+				}
 				ImGui::PopItemWidth();
 
 				{
@@ -467,6 +473,8 @@ void GUI::loadImGUIStyle()
 
 void GUI::renderBRDFParameters()
 {
+	if (!_brdfParameters) return;
+	
 	// Evaluate existence of variable types
 	bool existBool = false, existInt = false, existFloat = false;
 

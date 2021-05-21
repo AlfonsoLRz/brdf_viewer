@@ -874,9 +874,6 @@
     <None Include="Assets\Shaders\Compute\Terrain\computeBuildingPosition-comp.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Model\Terrain</Filter>
     </None>
-    <None Include="Assets\Shaders\Compute\Interpolations\buildBezierCurve-comp.glsl">
-      <Filter>Archivos de recursos\Shaders\Compute\Interpolations</Filter>
-    </None>
     <None Include="Assets\Shaders\Compute\Templates\constraints.glsl">
       <Filter>Archivos de recursos\Shaders\Compute\Templates</Filter>
     </None>
@@ -945,6 +942,18 @@
     </None>
     <None Include="Assets\Shaders\Triangles\brdfShadowsShader-frag.glsl">
       <Filter>Archivos de recursos\Shaders\Triangles</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\IdealDiffuse.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\OrenNayar.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\Minnaert.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\BRDFs\WardAnisotropic.brdf">
+      <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -42,11 +42,13 @@ void BRDFScene::render(const mat4& mModel, RenderingParameters* rendParams)
 
 void BRDFScene::updateBRDF(Model3D::BRDFType newBRDF)
 {
-	BRDFShader::clearCache();
-
 	// Change sphere for rendering
 	_brdfSphere->getModelCompent(0)->_brdf = newBRDF;
 	_cadModel->getModelCompent(0)->_brdf = newBRDF;
+
+	if (newBRDF == Model3D::NONE) return;
+
+	BRDFShader::clearCache();
 
 	// Delete previous shaders
 	delete _brdfPointCloudShader;
@@ -196,7 +198,7 @@ void BRDFScene::loadModels()
 	}
 
 	SSAOScene::loadModels();
-	this->updateBRDF(Model3D::PHONG);
+	this->updateBRDF(Model3D::MINNAERT);
 }
 
 bool BRDFScene::readCameraFromSettings(Camera* camera)

@@ -253,10 +253,13 @@
     <None Include="Assets\Shaders\2D\ssaoShader-frag.glsl" />
     <None Include="Assets\Shaders\2D\ssaoShader-vert.glsl" />
     <None Include="Assets\Shaders\BRDFs\CookTorrance.brdf" />
+    <None Include="Assets\Shaders\BRDFs\IdealDiffuse.brdf" />
+    <None Include="Assets\Shaders\BRDFs\Minnaert.brdf" />
+    <None Include="Assets\Shaders\BRDFs\OrenNayar.brdf" />
     <None Include="Assets\Shaders\BRDFs\Phong.brdf" />
+    <None Include="Assets\Shaders\BRDFs\WardAnisotropic.brdf" />
     <None Include="Assets\Shaders\Compute\BVHGeneration\endLoopComputations-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Generic\resetBufferIndex-comp.glsl" />
-    <None Include="Assets\Shaders\Compute\Interpolations\buildBezierCurve-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Model\computeFaceAABB-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Model\computeNormals-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Model\retrieveColors-comp.glsl" />

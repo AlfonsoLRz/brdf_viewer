@@ -33,6 +33,7 @@ BRDFShader::~BRDFShader()
 void BRDFShader::clearCache()
 {
 	_brdfReflectanceContent.clear();
+	_brdfRenderingContent.clear();
 	_brdfVariables.clear();
 }
 
@@ -280,6 +281,8 @@ std::unordered_map<Model3D::BRDFType, std::string> BRDFShader::getBRDFModulePath
 	brdfModulePath[Model3D::BRDFType::OREN_NAYAR] = "Assets/Shaders/BRDFs/OrenNayar.brdf";
 	brdfModulePath[Model3D::BRDFType::PHONG] = "Assets/Shaders/BRDFs/Phong.brdf";
 	brdfModulePath[Model3D::BRDFType::COOK_TORRANCE] = "Assets/Shaders/BRDFs/CookTorrance.brdf";
+	brdfModulePath[Model3D::BRDFType::MINNAERT] = "Assets/Shaders/BRDFs/Minnaert.brdf";
+	brdfModulePath[Model3D::BRDFType::WARD_ANISOTROPIC] = "Assets/Shaders/BRDFs/WardAnisotropic.brdf";
 
 	return brdfModulePath;
 }

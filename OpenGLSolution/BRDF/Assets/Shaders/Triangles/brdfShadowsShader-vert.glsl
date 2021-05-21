@@ -2,6 +2,8 @@
 
 // ********** PARAMETERS & VARIABLES ***********
 
+#include <Assets/Shaders/Compute/Templates/constraints.glsl>
+
 layout(location = 0) in vec3 vPosition;
 
 subroutine vec3 brdfType(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y);

@@ -1,0 +1,46 @@
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin parameters
+float Roughness 0.0 1.0 0.5
+bool Normalized 0
+::end parameters
+
+::begin reflectanceShader
+
+vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+    float dotLN = dot(L, N);
+    float dotNV = dot(N, V);
+    const float lnBeta  = acos(dotLN);
+	const float nvAlpha = acos(dotNV);
+
+    float squaredRoughness = Roughness * Roughness;
+	float A = 1.0f - 0.5f * (squaredRoughness / (squaredRoughness + .33f));
+    float B = 0.45f * squaredRoughness / (squaredRoughness + .09f);
+
+    return N * (A + B * max(0, dotNV - dotLN) * sin(max(nvAlpha, lnBeta)) * cos(min(nvAlpha, lnBeta))) / (Normalized ? PI : 1.0f);
+}
+
+::end reflectanceShader
+
+::begin renderingShader
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+{
+    float dotLN = dot(L, N);
+    float dotNV = dot(N, V);
+    const float lnBeta  = acos(dotLN);
+	const float nvAlpha = acos(dotNV);
+
+    float squaredRoughness = Roughness * Roughness;
+	float A = 1.0f - 0.5f * (squaredRoughness / (squaredRoughness + .33f));
+    float B = 0.45f * squaredRoughness / (squaredRoughness + .09f);
+
+    float diffuseFactor = (A + B * max(0, dotNV - dotLN) * sin(max(nvAlpha, lnBeta)) * cos(min(nvAlpha, lnBeta))) / (Normalized ? PI : 1.0f);
+
+    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), .0f) * diffuseFactor;
+}
+
+::end renderingShader

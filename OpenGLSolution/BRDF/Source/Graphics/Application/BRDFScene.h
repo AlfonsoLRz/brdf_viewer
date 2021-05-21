@@ -49,19 +49,19 @@ protected:
 
 protected:
 	// Models
-	BRDFSphere*		_brdfSphere;							//!<
-	CADModel*		_cadModel;								//!<	
-	VAO*			_lineVAO;								//!<
-	PGLLPointCloud* _pgllPointCloud;						//!<
-	PlanarSurface*	_plane;									//!<
+	BRDFSphere*			_brdfSphere;							//!<
+	CADModel*			_cadModel;								//!<	
+	VAO*				_lineVAO;								//!<
+	PGLLPointCloud*		_pgllPointCloud;						//!<
+	PlanarSurface*		_plane;									//!<
 
 	// Shaders
-	BRDFShader*		_brdfPointCloudShader;						//!<
-	BRDFShader*		_brdfTriangleMeshShader;					//!<
-	BRDFShader*		_brdfTriangleMeshPositionShader;			//!<
-	BRDFShader*		_brdfTriangleMeshNormalShader;				//!<
-	BRDFShader*		_brdfShadowsShader;							//!<
-	BRDFShader*		_brdfWireframeShader;						//!<
+	BRDFShader*			_brdfPointCloudShader;					//!<
+	BRDFShader*			_brdfTriangleMeshShader;				//!<
+	BRDFShader*			_brdfTriangleMeshPositionShader;		//!<
+	BRDFShader*			_brdfTriangleMeshNormalShader;			//!<
+	BRDFShader*			_brdfShadowsShader;						//!<
+	BRDFShader*			_brdfWireframeShader;					//!<	
 
 protected:
 	/**
