@@ -5,8 +5,8 @@
 
 // [Initialization of static attributes
 
-const unsigned BRDFSphere::SECTORS = 360 * 3;
-const unsigned BRDFSphere::STACKS = 90 * 3;
+const unsigned BRDFSphere::SECTORS = 360 / 2;
+const unsigned BRDFSphere::STACKS = 90 / 2;
 
 // [Public methods]
 
@@ -27,7 +27,7 @@ bool BRDFSphere::load(const mat4& modelMatrix)
 		_modelComp[0]->_topology = std::move(modelComponent->_topology);
 		_modelComp[0]->_triangleMesh = std::move(modelComponent->_triangleMesh);
 		_modelComp[0]->buildPointCloudTopology();
-		_modelComp[0]->buildWireframeTopology();
+		//_modelComp[0]->buildWireframeTopology();
 
 		this->setVAOData();
 		

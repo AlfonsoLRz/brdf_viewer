@@ -26,7 +26,7 @@ bool Window::load(const std::string& title, const uint16_t width, const uint16_t
 		return false;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);										// Antialiasing
+	glfwWindowHint(GLFW_SAMPLES, 8);										// Antialiasing
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);			// OpenGL Core Profile 4.5
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glm::clamp((int) openGL4Version, 1, 6));

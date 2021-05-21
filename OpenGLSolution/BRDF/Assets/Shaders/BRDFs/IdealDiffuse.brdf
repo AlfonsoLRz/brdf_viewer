@@ -1,0 +1,14 @@
+analytic
+
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin shader
+
+vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
+{
+	return N;
+}
+
+::end shader

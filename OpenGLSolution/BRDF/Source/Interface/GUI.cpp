@@ -503,13 +503,13 @@ void GUI::loadFonts()
 	std::copy_n("Lato", 5, cfg.Name);
 	io.Fonts->AddFontFromMemoryCompressedBase85TTF(lato_compressed_data_base85, 15.0f, &cfg);
 
-	//static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	//cfg.MergeMode = true;
-	//cfg.PixelSnapH = true;
-	//cfg.GlyphMinAdvanceX = 20.0f;
-	//cfg.GlyphMaxAdvanceX = 20.0f;
-	//std::copy_n("FontAwesome", 12, cfg.Name);
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	cfg.MergeMode = true;
+	cfg.PixelSnapH = true;
+	cfg.GlyphMinAdvanceX = 20.0f;
+	cfg.GlyphMaxAdvanceX = 20.0f;
+	std::copy_n("FontAwesome", 12, cfg.Name);
 
-	//io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-regular-400.ttf", 13.0f, &cfg, icons_ranges);
-	//io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-solid-900.ttf", 13.0f, &cfg, icons_ranges);
+	io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-regular-400.ttf", 13.0f, &cfg, icons_ranges);
+	io.Fonts->AddFontFromFileTTF("Assets/Fonts/fa-solid-900.ttf", 13.0f, &cfg, icons_ranges);
 }

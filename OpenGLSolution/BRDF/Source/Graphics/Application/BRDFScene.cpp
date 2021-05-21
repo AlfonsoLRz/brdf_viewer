@@ -11,7 +11,7 @@
 /// Initialization of static attributes
 const std::string BRDFScene::SCENE_SETTINGS_FOLDER = "Assets/Scene/Settings/BRDF/";
 
-const std::string BRDFScene::BRDF_FILE = "Assets/PGLL/m0_sincos.txt";
+const std::string BRDFScene::BRDF_FILE = "Assets/PGLL/BRDF.txt";
 const std::string BRDFScene::SCENE_CAMERA_FILE = "Camera.txt";
 const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
@@ -172,20 +172,20 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(20, 20, 10, 10, 1.0f, 1.0f);
+		_plane = new PlanarSurface(20, 20, 25, 25, 1.0f, 1.0f);
 		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CAD_WHITE));
 		_sceneGroup->addComponent(_plane);
 
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
-		//_sceneGroup->addComponent(_brdfSphere);
+		_sceneGroup->addComponent(_brdfSphere);
 
 		_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);
 		_sceneGroup->addComponent(_pgllPointCloud);
 	}
 
 	SSAOScene::loadModels();
-	this->updateBRDF(Model3D::COOK_TORRANCE);
+	this->updateBRDF(Model3D::IDEAL_DIFFUSE);
 }
 
 bool BRDFScene::readCameraFromSettings(Camera* camera)

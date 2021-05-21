@@ -110,29 +110,31 @@ bool PGLLPointCloud::loadModelFromPGLL(const mat4& modelMatrix)
 
 			FileManagement::readTokens(line, DELIMITER, stringTokens, floatTokens);
 
-			if (floatTokens.size() == 3)
+			if (floatTokens.size() == 4)
 			{
 				phi = glm::radians(floatTokens[1]);
 				theta = glm::radians(floatTokens[0]);
 				intensity = floatTokens[2];
 
-				vec4 xzDirection = glm::rotate(mat4(1.0f), phi, vec3(.0f, 1.0f, .0f)) * vec4(1.0f, .0f, .0f, .0f);
-				vec4 yDirection = glm::rotate(mat4(1.0f), theta, vec3(.0f, 0.0f, 1.0f)) * vec4(1.0f, .0f, .0f, .0f);
+				//vec4 xzDirection = glm::rotate(mat4(1.0f), phi, vec3(.0f, 1.0f, .0f)) * vec4(1.0f, .0f, .0f, .0f);
+				//vec4 yDirection = glm::rotate(mat4(1.0f), 1.0f - theta, vec3(.0f, 0.0f, 1.0f)) * vec4(1.0f, .0f, .0f, .0f);
 
-				_points.push_back(vec4(glm::normalize(vec3(xzDirection.x, yDirection.y, xzDirection.z)) * floatTokens[2], 1.0f));
+				//_points.push_back(vec4(glm::normalize(vec3(xzDirection.x, yDirection.y, xzDirection.z)) * floatTokens[2] * 3.0f, 1.0f));
 
-				const int azimuth = int(floatTokens[1]);
-				minMaxElevation[azimuth].x = glm::min(minMaxElevation[azimuth].x, floatTokens[0]);
-				minMaxElevation[azimuth].y = glm::max(minMaxElevation[azimuth].y, floatTokens[0]);
+				_points.push_back(vec4(vec3(floatTokens[0], floatTokens[1], floatTokens[2]) * floatTokens[3] * float(M_PI), 1.0f));
+
+				//const int azimuth = std::floor(floatTokens[1]);
+				//minMaxElevation[azimuth].x = glm::min(minMaxElevation[azimuth].x, floatTokens[0]);
+				//minMaxElevation[azimuth].y = glm::max(minMaxElevation[azimuth].y, floatTokens[0]);
 
 				FileManagement::clearTokens(stringTokens, floatTokens);
 			}
 		}
 
-		for (int angle = 0; angle < 180; ++angle)
-		{
-			std::cout << "Angle " << angle << ": " << minMaxElevation[angle].x << ", " << minMaxElevation[angle].y << std::endl;
-		}
+		//for (int angle = 0; angle < 180; ++angle)
+		//{
+		//	std::cout << "Angle " << angle << ": " << minMaxElevation[angle].x << ", " << minMaxElevation[angle].y << std::endl;
+		//}
 	}
 
 	in.close();

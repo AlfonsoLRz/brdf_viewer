@@ -86,7 +86,7 @@ Light::Light()
 	_shadowMap = new ShadowMap(canvasSize.x, canvasSize.y);
 
 	_shadowIntensity = vec2(0.0f, 1.0f);
-	_shadowRadius = .005;
+	_shadowRadius = .002f;
 	_blurFilterSize = BLUR_FILTER_SIZE;
 }
 

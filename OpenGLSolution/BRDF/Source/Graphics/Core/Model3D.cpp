@@ -468,7 +468,7 @@ void Model3D::setVAOData()
 		modelComp->_topologyIndicesLength[RendEnum::IBO_TRIANGLE_MESH] = modelComp->_triangleMesh.size();
 
 		vao->setVBOData(modelComp->_geometry);
-		vao->setIBOData(RendEnum::IBO_POINT_CLOUD, modelComp->_pointCloud);
+		//vao->setIBOData(RendEnum::IBO_POINT_CLOUD, modelComp->_pointCloud);
 		vao->setIBOData(RendEnum::IBO_WIREFRAME, modelComp->_wireframe);
 		vao->setIBOData(RendEnum::IBO_TRIANGLE_MESH, modelComp->_triangleMesh);
 

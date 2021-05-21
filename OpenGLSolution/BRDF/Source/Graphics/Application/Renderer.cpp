@@ -54,6 +54,8 @@ void Renderer::prepareOpenGL(const uint16_t width, const uint16_t height)
 
 	glCullFace(GL_FRONT);								// Necessary for shadow mapping, even tho we need an enable order before it
 
+	glLineWidth(3.0f);
+
 	glEnable(GL_PRIMITIVE_RESTART);						// Index which marks different primitives
 	glPrimitiveRestartIndex(Model3D::RESTART_PRIMITIVE_INDEX);
 
