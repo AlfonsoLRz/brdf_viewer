@@ -51,9 +51,9 @@ protected:
 	// Models
 	BRDFSphere*			_brdfSphere;							//!<
 	CADModel*			_cadModel;								//!<	
-	VAO*				_lineVAO;								//!<
 	PGLLPointCloud*		_pgllPointCloud;						//!<
 	PlanarSurface*		_plane;									//!<
+	VAO*				_vectorsVAO;							//!<
 
 	// Shaders
 	BRDFShader*			_brdfPointCloudShader;					//!<
@@ -61,7 +61,9 @@ protected:
 	BRDFShader*			_brdfTriangleMeshPositionShader;		//!<
 	BRDFShader*			_brdfTriangleMeshNormalShader;			//!<
 	BRDFShader*			_brdfShadowsShader;						//!<
-	BRDFShader*			_brdfWireframeShader;					//!<	
+	BRDFShader*			_brdfWireframeShader;					//!<
+
+	RenderingShader*	_brdfVectorRendering;					//!<			
 
 protected:
 	/**
@@ -147,6 +149,13 @@ protected:
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
 	virtual void drawAsTriangles4Shadows(const mat4& mModel, RenderingParameters* rendParams);
+
+	/**
+	*	@brief Renders other data structures related to a LiDAR scene.
+	*	@param mModel Additional model matrix to be applied over the initial model matrix.
+	*	@param rendParams Rendering parameters to be taken into account.
+	*/
+	virtual void renderOtherStructures(const mat4& mModel, RenderingParameters* rendParams);
 
 	/**
 	*	@brief Renders the scene without any post-processing efect.

@@ -3,38 +3,49 @@
 # [type] [name] [min val] [max val] [default val]
 
 ::begin parameters
-float Power 1 1000 100
+float Alpha_x 0.0 2.0 .5
+float Alpha_y 0.0 2.0 .5
+float ClampSqrt 0.000001 0.1 0.001
 ::end parameters
 
 ::begin reflectanceShader
 
 vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 {
-    const vec3 h            = VECTOR_H(reflectDirection, -ray.direction);
-	const vec3 binormal     = normalize(cross(compactCollision[index].tangent, compactCollision[index].normal));	
-    const float dotLN       = clamp(dot(-ray.direction, compactCollision[index].normal), .0f, 1.0f);
-	const float dotNV       = clamp(dot(compactCollision[index].normal, reflectDirection), .0f, 1.0f);
-	const float dotHX       = dot(h, compactCollision[index].tangent);
+	const vec3 h            = normalize(L + V);
+	const vec3 binormal     = normalize(cross(X, N));	
+    const float dotLN       = dot(L, N);
+	const float dotNV       = dot(N, V);
+	const float dotHX       = dot(h, X);
 	const float dotHY       = dot(h, binormal);	
-    const float dotHN       = dot(h, compactCollision[index].normal);
+    const float dotHN       = dot(h, N);
 	    
-	const vec2 alphaTerm    = vec2(dotHX / ALPHA.x, dotHY / ALPHA.y);
-	const float expFactor   = -2.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (1.0f + dotHN));
+	const vec2 alphaTerm	= vec2(dotHX / Alpha_x, dotHY / Alpha_y);
+	const float expFactor	= -1.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (SQUARE(dotHN)));
+	const float specFactor	= (1.0f / (4.0f * PI * Alpha_x * Alpha_y * sqrt(max(dotLN * dotNV, ClampSqrt)))) * exp(expFactor);
 
-	return KdKs.y * (1.0f / (4.0f * PI * ALPHA.x * ALPHA.y * sqrt(max(dotLN * dotNV, .1f)))) * exp(expFactor);
+	return N * specFactor;
 }
 
 ::end reflectanceShader
 
 ::begin renderingShader
 
-vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 {
-	vec3 R = reflect(L, N);
-    float D = pow(max(.0f, dot(R, V)), Power);
-    float dotLN = dot(L, N);
+	const vec3 h            = normalize(L + V);
+	const vec3 binormal     = normalize(cross(X, N));	
+    const float dotLN       = dot(L, N);
+	const float dotNV       = dot(N, V);
+	const float dotHX       = dot(h, X);
+	const float dotHY       = dot(h, binormal);	
+    const float dotHN       = dot(h, N);
+	    
+	const vec2 alphaTerm	= vec2(dotHX / Alpha_x, dotHY / Alpha_y);
+	const float expFactor	= -1.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (SQUARE(dotHN)));
+	const float specFactor	= (1.0f / (4.0f * PI * Alpha_x * Alpha_y * sqrt(max(dotLN * dotNV, ClampSqrt)))) * exp(expFactor);
 
-    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * D;
+    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * specFactor;
 }
 
 ::end renderingShader

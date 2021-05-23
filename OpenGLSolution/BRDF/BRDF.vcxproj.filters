@@ -247,6 +247,9 @@
     <Filter Include="Archivos de recursos\Shaders\BRDFs">
       <UniqueIdentifier>{f1702aa8-312f-4e86-b4d2-410f6b8929f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de recursos\Shaders\Geometry">
+      <UniqueIdentifier>{efd82ef6-0b6e-49eb-9678-bb81266db923}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Geometry\2D\Vector2.h">
@@ -954,6 +957,18 @@
     </None>
     <None Include="Assets\Shaders\BRDFs\WardAnisotropic.brdf">
       <Filter>Archivos de recursos\Shaders\BRDFs</Filter>
+    </None>
+    <None Include="Assets\Shaders\Compute\Templates\utilities.glsl">
+      <Filter>Archivos de recursos\Shaders\Compute\Templates</Filter>
+    </None>
+    <None Include="Assets\Shaders\Geometry\brdfVectors-frag.glsl">
+      <Filter>Archivos de recursos\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Assets\Shaders\Geometry\brdfVectors-geo.glsl">
+      <Filter>Archivos de recursos\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Assets\Shaders\Geometry\brdfVectors-vert.glsl">
+      <Filter>Archivos de recursos\Shaders\Geometry</Filter>
     </None>
   </ItemGroup>
 </Project>

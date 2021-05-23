@@ -28,7 +28,11 @@ public:
 
 	// BRDF
 	int								_brdfType;								//!< Type of BRDF that adopt the sphere
-	vec3							_L, _V;									//!< 
+	float							_heightTextureScale;					//!<
+	vec3							_L, _V;									//!<
+	vec3							_lightColor, _viewColor;				//!<
+	bool							_renderBRDFVectors;						//!<
+	float							_vectorScale;							//!<
 
 	// Screenshot
 	char							_screenshotFilenameBuffer[32];			//!< Location of screenshot
@@ -42,7 +46,8 @@ public:
 	vec3							_scenePointCloudColor;					//!< Color of point cloud which shows all the vertices
 
 	// Wireframe
-	vec3							_bvhWireframeColor;						//!< Color of BVH structure 
+	vec3							_bvhWireframeColor;						//!< Color of BVH structure
+	float							_lineWidth;								//!<
 	vec3							_wireframeColor;						//!< Color of lines in wireframe rendering
 
 	// Triangle mesh
@@ -67,8 +72,13 @@ public:
 		_materialScattering(1.5f),
 
 		_brdfType(Model3D::IDEAL_DIFFUSE),
+		_heightTextureScale(1.0f),
 		_L(glm::normalize(vec3(-1.0f, 1.0f, .0f))),
 		_V(glm::normalize(vec3(1.0f, 1.0f, .0f))),
+		_lightColor(vec3(.0f, .0f, 1.0f)),
+		_viewColor(vec3(1.0f, .0f, .0f)),
+		_renderBRDFVectors(true),
+		_vectorScale(2.0f),
 
 		_screenshotFilenameBuffer("Screenshot.png"),
 		_screenshotMultiplier(1.0f),
@@ -79,6 +89,7 @@ public:
 		_scenePointCloudColor(1.0f, .0f, .0f),
 
 		_bvhWireframeColor(1.0f, 1.0f, .0f),
+		_lineWidth(1.0f),
 		_wireframeColor(0.0f),
 
 		_ambientOcclusion(true),

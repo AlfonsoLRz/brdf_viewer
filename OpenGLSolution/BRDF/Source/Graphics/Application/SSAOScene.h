@@ -37,7 +37,7 @@ protected:
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
 	*/
-	void renderOtherStructures(const mat4& mModel, RenderingParameters* rendParams);
+	virtual void renderOtherStructures(const mat4& mModel, RenderingParameters* rendParams);
 
 	/**
 	*	@brief Renders the scene without any post-processing efect.

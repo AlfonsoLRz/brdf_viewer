@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BRDFSphere.h"
 
+#include "Graphics/Application/Renderer.h"
 #include "OpenGLUtilities.h"
 
 // [Initialization of static attributes
@@ -48,7 +49,8 @@ void BRDFSphere::renderTriangles(RenderingShader* shader, const RendEnum::RendSh
 
 	if (vao)
 	{
-		shader->setUniform("heightBoundaries", vec2(.0f, 1.0f));	
+		shader->setUniform("heightBoundaries", vec2(.0f, 1.0f));
+		shader->setUniform("heightScale", Renderer::getInstance()->getRenderingParameters()->_heightTextureScale);
 		this->setShaderUniforms(shader, shaderType, matrix);
 
 		if (material)

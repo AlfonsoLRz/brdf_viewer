@@ -63,7 +63,7 @@ struct RendEnum
 
 		// BRDF
 		BRDF_SPHERE_SHADER,
-		VECTOR_INSTANCE_SHADER,
+		BRDF_VECTOR_SHADER,
 
 		// Data structures
 		BVH_SHADER,

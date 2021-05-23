@@ -264,37 +264,54 @@ void GUI::showRenderingSettings()
 
 			if (ImGui::BeginTabItem("BRDF Rendering"))
 			{
-				static int brdf = *_sphereBRDF;
+				static int currentBRDF = *_sphereBRDF;
 				
 				this->leaveSpace(1);
 
 				ImGui::PushItemWidth(200.0f);
-				if (ImGui::Combo("Visualization", &brdf, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR)))
+				if (ImGui::Combo("Visualization", &currentBRDF, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR)))
 				{
-					_brdfScene->updateBRDF(static_cast<Model3D::BRDFType>(brdf));
+					_brdfScene->updateBRDF(static_cast<Model3D::BRDFType>(currentBRDF));
 					_brdfParameters = BRDFShader::getParameters(*_sphereBRDF);
 				}
 				ImGui::PopItemWidth();
 
+				ImGui::Separator();
+
+				this->leaveSpace(2);
+
+				ImGui::Checkbox("Render Vectors", &_renderingParams->_renderBRDFVectors);
+				ImGui::SameLine(0, 15);
+				ImGui::PushItemWidth(300.0f);
+				ImGui::SliderFloat("Vector Scale", &_renderingParams->_vectorScale, 1.0f, 10.0f);
+				ImGui::PopItemWidth();
+
+				this->leaveSpace(2);
+
+				ImGui::PushItemWidth(300.0f);
+				ImGui::SliderFloat("BRDF Sphere Texture Height", &_renderingParams->_heightTextureScale, .1f, 50.0f);
+				ImGui::PopItemWidth();
+
+				this->leaveSpace(2);
+				
 				{
-					ImGui::SameLine(0, 30);
-					ImGui::PushID(0);
-					ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(3 / 7.0f, 0.6f, 0.6f));
-					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(3 / 7.0f, 0.7f, 0.7f));
-					ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(3 / 7.0f, 0.8f, 0.8f));
+					const ImVec2 position = ImGui::GetCursorScreenPos();
 
-					if (ImGui::Button("Refresh BRDF"))
-					{
-
-					}
-
-					ImGui::PopStyleColor(3);
-					ImGui::PopID();
-					ImGui::Separator();
-
-					this->leaveSpace(2);
+					ImGui::PushItemWidth(500.0f);
+					ImGui::ColorEdit3("Light Vector Color", &_renderingParams->_lightColor[0]);
 					ImGui::SliderFloat3("Light Direction", &_renderingParams->_L[0], -1.0f, 1.0f);
+					ImGui::PopItemWidth();
+				}
+				
+				this->leaveSpace(2);
+
+				{
+					const ImVec2 position = ImGui::GetCursorScreenPos();
+
+					ImGui::PushItemWidth(500.0f);
+					ImGui::ColorEdit3("View Vector Color", &_renderingParams->_viewColor[0]);
 					ImGui::SliderFloat3("View Direction", &_renderingParams->_V[0], -1.0f, 1.0f);
+					ImGui::PopItemWidth();
 				}
 
 				this->leaveSpace(2);
@@ -327,8 +344,10 @@ void GUI::showRenderingSettings()
 			{
 				this->leaveSpace(1);
 
+				ImGui::PushItemWidth(400.0f);
 				ImGui::SliderFloat("Point Size", &_renderingParams->_scenePointSize, 0.1f, 50.0f);
 				ImGui::ColorEdit3("Point Cloud Color", &_renderingParams->_scenePointCloudColor[0]);
+				ImGui::PopItemWidth();
 
 				ImGui::EndTabItem();
 			}
@@ -337,7 +356,13 @@ void GUI::showRenderingSettings()
 			{
 				this->leaveSpace(1);
 
+				ImGui::PushItemWidth(400.0f);
+				if (ImGui::SliderFloat("Line Width", &_renderingParams->_lineWidth, 1.0f, 20.0f))
+				{
+					glLineWidth(_renderingParams->_lineWidth);
+				}
 				ImGui::ColorEdit3("Wireframe Color", &_renderingParams->_wireframeColor[0]);
+				ImGui::PopItemWidth();
 
 				ImGui::EndTabItem();
 			}
@@ -537,6 +562,14 @@ void GUI::renderBRDFParameters()
 			}
 		}
 	}
+}
+
+void GUI::renderFilledCircle(const vec2& position, const float radius, const vec3& color)
+{
+	const int segments = 12;
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+	drawList->AddCircleFilled(ImVec2(position.x + radius, position.y + radius), radius, ImColor(ImVec4(color.x, color.y, color.z, 1.0f)), segments);
 }
 
 void GUI::renderObjectPanel(Model3D::ModelComponent* modelComponent)

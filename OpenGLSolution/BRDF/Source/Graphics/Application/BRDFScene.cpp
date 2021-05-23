@@ -18,15 +18,28 @@ const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 // [Public methods]
 
 BRDFScene::BRDFScene() :
-	_brdfSphere(nullptr), _plane(nullptr), _pgllPointCloud(nullptr),
+	_brdfSphere(nullptr), _plane(nullptr), _pgllPointCloud(nullptr), _vectorsVAO(nullptr),
 	_brdfPointCloudShader(nullptr), _brdfTriangleMeshShader(nullptr), _brdfTriangleMeshNormalShader(nullptr), _brdfTriangleMeshPositionShader(nullptr),
 	_brdfShadowsShader(nullptr), _brdfWireframeShader(nullptr)
 {
+	_brdfVectorRendering = ShaderList::getInstance()->getRenderingShader(RendEnum::BRDF_VECTOR_SHADER);
+
+	// Define a starting position for view and light vectors
+	{
+		std::vector<Model3D::VertexGPUData> position{ Model3D::VertexGPUData { vec3(.0f, .0f, .0f)} };
+		std::vector<unsigned> indices{ 0 };
+		_vectorsVAO = new VAO(true);
+
+		_vectorsVAO->setVBOData(position);
+		_vectorsVAO->setIBOData(RendEnum::IBO_POINT_CLOUD, indices);;
+	}
 }
 
 BRDFScene::~BRDFScene()
 {
 	delete _pgllPointCloud;
+	delete _vectorsVAO;
+	
 	delete _brdfPointCloudShader;
 	delete _brdfTriangleMeshShader;
 	delete _brdfTriangleMeshNormalShader;
@@ -48,7 +61,7 @@ void BRDFScene::updateBRDF(Model3D::BRDFType newBRDF)
 
 	if (newBRDF == Model3D::NONE) return;
 
-	BRDFShader::clearCache();
+	//BRDFShader::clearCache();
 
 	// Delete previous shaders
 	delete _brdfPointCloudShader;
@@ -198,7 +211,7 @@ void BRDFScene::loadModels()
 	}
 
 	SSAOScene::loadModels();
-	this->updateBRDF(Model3D::MINNAERT);
+	this->updateBRDF(Model3D::COOK_TORRANCE);
 }
 
 bool BRDFScene::readCameraFromSettings(Camera* camera)
@@ -534,6 +547,32 @@ void BRDFScene::drawAsTriangles4Shadows(const mat4& mModel, RenderingParameters*
 	glViewport(0, 0, canvasSize.x, canvasSize.y);
 	glDisable(GL_CULL_FACE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void BRDFScene::renderOtherStructures(const mat4& mModel, RenderingParameters* rendParams)
+{
+	SSAOScene::renderOtherStructures(mModel, rendParams);
+
+	if (rendParams->_renderBRDFVectors)
+	{
+		Camera* activeCamera = _cameraManager->getActiveCamera(); if (!activeCamera) return;
+		std::vector<mat4> matrix(RendEnum::numMatricesTypes());
+
+		{
+			matrix[RendEnum::MODEL_MATRIX] = mModel;
+			matrix[RendEnum::VIEW_PROJ_MATRIX] = activeCamera->getViewProjMatrix();
+
+			_brdfVectorRendering->use();
+			_brdfVectorRendering->applyActiveSubroutines();
+			_brdfVectorRendering->setUniform("mModelViewProj", matrix[RendEnum::VIEW_PROJ_MATRIX] * matrix[RendEnum::MODEL_MATRIX]);
+			_brdfVectorRendering->setUniform("lightDirection", glm::normalize(rendParams->_L) * rendParams->_vectorScale);
+			_brdfVectorRendering->setUniform("lightVectorColor", rendParams->_lightColor);
+			_brdfVectorRendering->setUniform("viewDirection", glm::normalize(rendParams->_V) * rendParams->_vectorScale);
+			_brdfVectorRendering->setUniform("viewVectorColor", rendParams->_viewColor);
+
+			_vectorsVAO->drawObject(RendEnum::IBO_POINT_CLOUD, GL_POINTS, 1);
+		}
+	}
 }
 
 void BRDFScene::renderScene(const mat4& mModel, RenderingParameters* rendParams)

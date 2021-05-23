@@ -87,6 +87,11 @@ protected:
 	/**
 	*	@brief 
 	*/
+	void renderFilledCircle(const vec2& position, const float radius, const vec3& color);
+
+	/**
+	*	@brief 
+	*/
 	void renderObjectPanel(Model3D::ModelComponent* modelComponent);
 
 	/**

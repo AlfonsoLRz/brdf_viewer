@@ -3,8 +3,10 @@
 // ********** PARAMETERS & VARIABLES ***********
 
 #include <Assets/Shaders/Compute/Templates/constraints.glsl>
+#include <Assets/Shaders/Compute/Templates/utilities.glsl>
 
 layout(location = 0) in vec3 vPosition;
+layout(location = 3) in vec3 vTangent;
 
 subroutine vec3 brdfType(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y);
 subroutine uniform brdfType brdfUniform;
@@ -26,7 +28,7 @@ vec3 noBRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 
 void main()
 {
-	const vec3 vertexPosition = brdfUniform(lightDirection, normalize(vPosition), viewDirection, vec3(.0f), vec3(.0f));
+	const vec3 vertexPosition = brdfUniform(lightDirection, normalize(vPosition), viewDirection, vTangent, vec3(.0f));
 
 	gl_Position = mModelViewProj * vec4(vertexPosition, 1.0f);
 }

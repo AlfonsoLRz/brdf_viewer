@@ -31,6 +31,7 @@ std::unordered_map<uint8_t, std::string> ShaderList::REND_SHADER_SOURCE {
 		{RendEnum::BLUR_SHADER, "Assets/Shaders/Filters/blur"},
 		{RendEnum::BLUR_SSAO_SHADER, "Assets/Shaders/2D/blurSSAOShader"},
 		{RendEnum::BRDF_SPHERE_SHADER, "Assets/Shaders/Triangles/brdfSphere"},
+		{RendEnum::BRDF_VECTOR_SHADER, "Assets/Shaders/Geometry/brdfVectors"},
 		{RendEnum::BVH_SHADER, "Assets/Shaders/Lines/bvh"},
 		{RendEnum::DEBUG_QUAD_SHADER, "Assets/Shaders/Triangles/debugQuad"},
 		{RendEnum::POINT_CLOUD_SHADER, "Assets/Shaders/Points/pointCloud"},
@@ -38,7 +39,6 @@ std::unordered_map<uint8_t, std::string> ShaderList::REND_SHADER_SOURCE {
 		{RendEnum::TRIANGLE_MESH_GROUP_SHADER, "Assets/Shaders/Triangles/triangleMeshGroup"},
 		{RendEnum::TRIANGLE_MESH_NORMAL_SHADER, "Assets/Shaders/Triangles/triangleMeshNormal"},
 		{RendEnum::TRIANGLE_MESH_POSITION_SHADER, "Assets/Shaders/Triangles/triangleMeshPosition"},
-		{RendEnum::VECTOR_INSTANCE_SHADER, "Assets/Shaders/Lines/wireframeInstance"},
 		{RendEnum::WIREFRAME_SHADER, "Assets/Shaders/Lines/wireframe"},
 		{RendEnum::SHADOWS_SHADER, "Assets/Shaders/Triangles/shadowsShader"},
 		{RendEnum::SSAO_SHADER, "Assets/Shaders/2D/ssaoShader"}

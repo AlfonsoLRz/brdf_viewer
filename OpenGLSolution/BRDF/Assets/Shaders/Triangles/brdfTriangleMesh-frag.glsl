@@ -3,6 +3,7 @@
 // ********** PARAMETERS & VARIABLES ***********
 
 #include <Assets/Shaders/Compute/Templates/constraints.glsl>
+#include <Assets/Shaders/Compute/Templates/utilities.glsl>
 #define CUTOFF .8f
 
 // ------------ Geometry ------------
@@ -10,6 +11,7 @@ in vec3				worldPosition;
 in vec3				position;
 in vec3				normal;
 in vec2				textCoord;
+in vec3				tangent;
 in vec4				shadowCoord;
 
 // ------------ Lighting ------------
@@ -20,6 +22,7 @@ uniform vec3		lightDirection;
 uniform sampler2D	texKadSampler;
 uniform sampler2D	texKsSampler;
 uniform vec2		heightBoundaries;
+uniform float		heightScale;
 uniform float		materialScattering;				// Substitutes ambient lighting
 uniform float		shininess;
 
@@ -36,7 +39,7 @@ uniform sampler2D	texSemiTransparentSampler;
 subroutine vec3		lightType(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, const float shadowDiffuseFactor, const float shadowSpecFactor);
 subroutine uniform	lightType lightUniform;
 
-subroutine vec3		brdfType(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V);
+subroutine vec3		brdfType(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y);
 subroutine uniform	brdfType brdfUniform;
 
 // Colors
@@ -125,7 +128,7 @@ vec3 getSpecular(const vec3 fragKs, const float dotHN)
 INCLUDE BRDF
 
 subroutine(brdfType)
-vec3 noBRDF(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V)
+vec3 noBRDF(vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 {
 	const vec3 h = normalize(V + L);						// Halfway vector
 
@@ -172,8 +175,9 @@ vec3 pointLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, co
 	const vec3 n = normalize(fragNormal);
 	const vec3 l = normalize(lightPosition - position);
 	const vec3 v = normalize(-position);
+	const vec3 t = normalize(tangent);
 
-	const vec3 diffuseSpecular = brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v);
+	const vec3 diffuseSpecular = brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v, t, vec3(.0f));
 
 	const float distance = distance(lightPosition, position);
 	const float attenuation = attenuationUniform(distance);
@@ -187,8 +191,9 @@ vec3 directionalLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNorm
 	const vec3 n = normalize(fragNormal);
 	const vec3 l = normalize(lightDirection);
 	const vec3 v = normalize(-position);
+	const vec3 t = normalize(tangent);
 
-	return brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v);
+	return brdfUniform(fragKad, fragKs, shadowDiffuseFactor, shadowSpecFactor, l, n, v, t, vec3(.0f));
 }
 
 subroutine(lightType)
@@ -250,7 +255,7 @@ vec4 getBaseKad()
 subroutine(kadType)
 vec4 getHeightKad()
 {
-	return texture(texKadSampler, vec2(.5f, (worldPosition.y - heightBoundaries.x) / (heightBoundaries.y - heightBoundaries.x)));
+	return texture(texKadSampler, vec2(.5f, (worldPosition.y - heightBoundaries.x) / (heightBoundaries.y * heightScale - heightBoundaries.x)));
 }
 
 // Obtains color from specular texture

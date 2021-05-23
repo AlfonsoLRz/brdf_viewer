@@ -5,34 +5,96 @@ analytic
 # [type] [name] [min val] [max val] [default val]
 
 ::begin parameters
-//float m 0.001 .3 .1
-//float f0 0 1 .1
-//bool include_F 1
-//bool include_G 1
+float F0Reflectivity 0.0 1.0 0.5
+float Roughness 0.0 2.0 0.5
 ::end parameters
 
 ::begin reflectanceShader
 
+float normalDistribution(float dotNH, float roughness)
+{   
+    const float dotNHSquared = SQUARE(dotNH);
+
+    return (1.0f / (roughness * roughness * dotNHSquared * dotNHSquared)) * exp((dotNHSquared - 1.0f) / (roughness * roughness * dotNHSquared));
+}
+
+float geometrySmith(vec3 N, vec3 L, vec3 V, vec3 H)
+{   
+	float dotNL = dot(N, L);
+	float dotNV = dot(N, V);
+    float dotNH = dot(N, H);
+	float dotHV = dot(H, V);
+
+	float G1 = (2.0 * dotNH * dotNV) / dotHV;
+	float G2 = (2.0 * dotNH * dotNL) / dotHV;
+	float G = min(1.0f, min(G1, G2));
+
+    return G;
+}
+
+float fresnelSchlick(float dotLN, float reflectivity)
+{
+	return reflectivity + (1.0f - reflectivity) * pow(1.0f - dotLN, 5.0f);
+}
+
 vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 {
-	vec3 H = normalize(L + V);
-	float NdotL = max(pow(dot(N, H), 4.0f), .1f);
-	float Rs = 0.0;
-	
-	return N * NdotL;
+	const vec3 h                = VECTOR_H(L, V);
+    const float dotNH           = dot(h, N);
+	const float dotLN			= dot(L, N);
+	const float dotNV			= dot(N, V);
+
+    const float normalDist      = normalDistribution(dotNH, Roughness);
+    const float geometryFunct   = geometrySmith(N, L, V, h);
+    const float fresnelF         = fresnelSchlick(dotLN, F0Reflectivity);
+	const float specFactor		= (fresnelF * normalDist * geometryFunct) / (PI * dotLN * dotNV);
+
+	return N * specFactor;
 }
 
 ::end reflectanceShader
 
 ::begin renderingShader
 
-vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+float normalDistribution(float dotNH, float roughness)
+{   
+    const float dotNHSquared = SQUARE(dotNH);
+
+    return (1.0f / (roughness * roughness * dotNHSquared * dotNHSquared)) * exp((dotNHSquared - 1.0f) / (roughness * roughness * dotNHSquared));
+}
+
+float geometrySmith(vec3 N, vec3 L, vec3 V, vec3 H)
+{   
+	float dotNL = dot(N, L);
+	float dotNV = dot(N, V);
+    float dotNH = dot(N, H);
+	float dotHV = dot(H, V);
+
+	float G1 = (2.0 * dotNH * dotNV) / dotHV;
+	float G2 = (2.0 * dotNH * dotNL) / dotHV;
+	float G = min(1.0f, min(G1, G2));
+
+    return G;
+}
+
+float fresnelSchlick(float dotLN, float reflectivity)
 {
-	vec3 H = normalize(L + V);
-	float NdotL = max(pow(dot(N, H), 4.0f), .1f);
-	float Rs = 0.0;
-	
-	return N * NdotL;
+	return reflectivity + (1.0f - reflectivity) * pow(1.0f - dotLN, 5.0f);
+}
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
+{
+	const vec3 h                = VECTOR_H(L, V);
+    const float dotNH           = dot(h, N);
+	const float dotLN			= dot(L, N);
+	const float dotNV			= dot(N, V);
+
+    const float normalDist      = normalDistribution(dotNH, Roughness);
+    const float geometryFunct   = geometrySmith(N, L, V, h);
+    const float fresnelF         = fresnelSchlick(dotLN, max(ks.x, max(ks.y, ks.z)));
+	const float specFactor		= (fresnelF * normalDist * geometryFunct) / (PI * dotLN * dotNV);
+
+	return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * specFactor;
 }
 
 ::end renderingShader

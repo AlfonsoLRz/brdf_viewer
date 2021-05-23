@@ -284,6 +284,7 @@
     <None Include="Assets\Shaders\Compute\Templates\modelStructs.glsl" />
     <None Include="Assets\Shaders\Compute\Templates\random.glsl" />
     <None Include="Assets\Shaders\Compute\Templates\rotation.glsl" />
+    <None Include="Assets\Shaders\Compute\Templates\utilities.glsl" />
     <None Include="Assets\Shaders\Compute\Terrain\computeBuildingPosition-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Terrain\computeNormals-comp.glsl" />
     <None Include="Assets\Shaders\Compute\Terrain\computeTreeProperties-comp.glsl" />
@@ -297,6 +298,9 @@
     <None Include="Assets\Shaders\Filters\blur-vert.glsl" />
     <None Include="Assets\Shaders\Filters\normalMapShader-frag.glsl" />
     <None Include="Assets\Shaders\Filters\normalMapShader-vert.glsl" />
+    <None Include="Assets\Shaders\Geometry\brdfVectors-frag.glsl" />
+    <None Include="Assets\Shaders\Geometry\brdfVectors-geo.glsl" />
+    <None Include="Assets\Shaders\Geometry\brdfVectors-vert.glsl" />
     <None Include="Assets\Shaders\Lines\brdfWireframe-frag.glsl" />
     <None Include="Assets\Shaders\Lines\brdfWireframe-vert.glsl" />
     <None Include="Assets\Shaders\Lines\wireframeInstance-frag.glsl" />

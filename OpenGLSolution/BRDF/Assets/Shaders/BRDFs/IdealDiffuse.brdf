@@ -17,7 +17,7 @@ vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 
 ::begin renderingShader
 
-vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V )
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 {
     float dotLN = dot(L, N);
 
