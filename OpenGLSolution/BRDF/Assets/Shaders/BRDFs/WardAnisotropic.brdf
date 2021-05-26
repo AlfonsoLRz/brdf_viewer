@@ -24,7 +24,7 @@ vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 	const float expFactor	= -1.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (SQUARE(dotHN)));
 	const float specFactor	= (1.0f / (4.0f * PI * Alpha_x * Alpha_y * sqrt(max(dotLN * dotNV, ClampSqrt)))) * exp(expFactor);
 
-	return N * specFactor;
+	return N * max(specFactor, 1.0f / PI);
 }
 
 ::end reflectanceShader

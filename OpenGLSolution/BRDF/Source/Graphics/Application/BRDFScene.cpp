@@ -169,8 +169,11 @@ void BRDFScene::loadCameras()
 		this->loadDefaultCamera(camera);
 	}
 
-	camera->setPosition(vec3(1.70015f, 1.45277f, 0.683818f));
-	camera->setLookAt(vec3(-6.92137f, -2.67601f, -2.16847f));
+	//camera->setPosition(vec3(1.70015f, 1.45277f, 0.683818f));
+	//camera->setLookAt(vec3(-6.92137f, -2.67601f, -2.16847f));
+
+	camera->setPosition(vec3(1.72121f, 0.902009f, -0.154246f));
+	camera->setLookAt(vec3(-7.45128f, -2.93413f, 0.659658f));
 
 	_cameraManager->insertCamera(camera);
 }
@@ -192,7 +195,7 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(8, 8, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
+		_plane = new PlanarSurface(1.5f, 1.5f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
 		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
 		_plane->setName("Planar Surface", 0);
 		_sceneGroup->addComponent(_plane);
@@ -466,6 +469,12 @@ void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingPar
 			_lights[i]->applyLight(_brdfTriangleMeshShader, matrix[RendEnum::VIEW_MATRIX]);
 			_lights[i]->applyShadowMapTexture(_brdfTriangleMeshShader);
 			_brdfTriangleMeshShader->applyActiveSubroutines();
+
+			_brdfTriangleMeshShader->setUniform("ignoreTexture", rendParams->_ignoreTexture);
+			if (rendParams->_ignoreTexture)
+			{
+				_brdfTriangleMeshShader->setUniform("altColor", rendParams->_textureReplacementColor);
+			}
 
 			_sceneGroup->drawAsTriangles(_brdfTriangleMeshShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
 		}

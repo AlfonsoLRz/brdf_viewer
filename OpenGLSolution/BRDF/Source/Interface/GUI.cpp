@@ -256,8 +256,12 @@ void GUI::showRenderingSettings()
 					ImGui::PushItemWidth(200.0f);
 					ImGui::Combo("Visualization", &_renderingParams->_visualizationMode, visualizationTitles, IM_ARRAYSIZE(visualizationTitles));
 
-					this->leaveSpace(1);
+					this->leaveSpace(2);
 				}
+
+				ImGui::Checkbox("Ignore textures", &_renderingParams->_ignoreTexture);
+				ImGui::SameLine(0, 25);
+				ImGui::ColorEdit3("Alternative color", &_renderingParams->_textureReplacementColor[0]);
 
 				ImGui::EndTabItem();
 			}
@@ -289,7 +293,7 @@ void GUI::showRenderingSettings()
 				this->leaveSpace(2);
 
 				ImGui::PushItemWidth(300.0f);
-				ImGui::SliderFloat("BRDF Sphere Texture Height", &_renderingParams->_heightTextureScale, .1f, 50.0f);
+				ImGui::SliderFloat("BRDF Sphere Texture Height", &_renderingParams->_heightTextureScale, .1f, 20.0f);
 				ImGui::PopItemWidth();
 
 				this->leaveSpace(2);

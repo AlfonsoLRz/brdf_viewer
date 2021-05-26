@@ -52,8 +52,10 @@ public:
 
 	// Triangle mesh
 	bool							_ambientOcclusion;						//!< Boolean value to enable/disable occlusion
+	bool							_ignoreTexture;							//!< Ignores model texture to apply any other color
 	bool							_renderSemanticConcept;					//!< Boolean value to indicate if rendering semantic concepts is needed
 	int								_semanticRenderingConcept;				//!< ASPRS / Custom semantic concepts (selector)
+	vec3							_textureReplacementColor;				//!< Alternative color when model texture is ignored
 
 	// What to see		
 	float							_bvhNodesPercentage;					//!< Percentage of BVH nodes to be rendered (lower percentage means smaller nodes will be rendered)
@@ -93,7 +95,9 @@ public:
 		_wireframeColor(0.0f),
 
 		_ambientOcclusion(true),
+		_ignoreTexture(false),
 		_renderSemanticConcept(false),
+		_textureReplacementColor(1.0f),
 
 		_bvhNodesPercentage(1.0f),
 		_showBVH(false),

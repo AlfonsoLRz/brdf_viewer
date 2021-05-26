@@ -13,7 +13,7 @@ vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
 	vec3 R  = reflect(L, N);
     float D = pow(max(.0f, dot(R, V)), Power);
 
-    return N * D;
+    return N * max(D, 1.0f / PI);
 }
 
 ::end reflectanceShader

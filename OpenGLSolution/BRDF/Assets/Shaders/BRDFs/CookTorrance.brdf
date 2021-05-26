@@ -6,7 +6,7 @@ analytic
 
 ::begin parameters
 float F0Reflectivity 0.0 1.0 0.5
-float Roughness 0.0 2.0 0.5
+float Roughness 0.0 2.0 0.2
 ::end parameters
 
 ::begin reflectanceShader
@@ -34,7 +34,7 @@ float geometrySmith(vec3 N, vec3 L, vec3 V, vec3 H)
 
 float fresnelSchlick(float dotLN, float reflectivity)
 {
-	return reflectivity + (1.0f - reflectivity) * pow(1.0f - dotLN, 5.0f);
+	return reflectivity + (1.0f - reflectivity) * pow(1.0f - clamp(dotLN, .0f, 10.0f), 5.0f);
 }
 
 vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
@@ -46,10 +46,10 @@ vec3 BRDF( vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
 
     const float normalDist      = normalDistribution(dotNH, Roughness);
     const float geometryFunct   = geometrySmith(N, L, V, h);
-    const float fresnelF         = fresnelSchlick(dotLN, F0Reflectivity);
+    const float fresnelF        = fresnelSchlick(dotLN, F0Reflectivity);
 	const float specFactor		= (fresnelF * normalDist * geometryFunct) / (PI * dotLN * dotNV);
 
-	return N * specFactor;
+	return N * max(specFactor, 1.0f / PI);
 }
 
 ::end reflectanceShader
@@ -91,7 +91,7 @@ vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L,
 
     const float normalDist      = normalDistribution(dotNH, Roughness);
     const float geometryFunct   = geometrySmith(N, L, V, h);
-    const float fresnelF         = fresnelSchlick(dotLN, max(ks.x, max(ks.y, ks.z)));
+    const float fresnelF        = fresnelSchlick(dotLN, max(ks.x, max(ks.y, ks.z)));
 	const float specFactor		= (fresnelF * normalDist * geometryFunct) / (PI * dotLN * dotNV);
 
 	return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * specFactor;

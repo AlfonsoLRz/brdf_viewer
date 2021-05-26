@@ -21,8 +21,10 @@ uniform vec3		lightDirection;
 // ----------- Materials ------------
 uniform sampler2D	texKadSampler;
 uniform sampler2D	texKsSampler;
+uniform vec3		altColor;
 uniform vec2		heightBoundaries;
 uniform float		heightScale;
+uniform bool		ignoreTexture;
 uniform float		materialScattering;				// Substitutes ambient lighting
 uniform float		shininess;
 
@@ -249,13 +251,13 @@ vec3 rimLight(const vec3 fragKad, const vec3 fragKs, const vec3 fragNormal, cons
 subroutine(kadType)
 vec4 getBaseKad()
 {
-	return texture(texKadSampler, textCoord);
+	return ignoreTexture ? vec4(altColor, 1.0f) : texture(texKadSampler, textCoord);
 }
 
 subroutine(kadType)
 vec4 getHeightKad()
 {
-	return texture(texKadSampler, vec2(.5f, (worldPosition.y - heightBoundaries.x) / (heightBoundaries.y * heightScale - heightBoundaries.x)));
+	return  ignoreTexture ? vec4(altColor, 1.0f) : texture(texKadSampler, vec2(.5f, (worldPosition.y - heightBoundaries.x) / (heightBoundaries.y * heightScale - heightBoundaries.x)));
 }
 
 // Obtains color from specular texture
