@@ -223,6 +223,14 @@ void Model3D::registerModelComponentGroup(Group3D* group)
 	}
 }
 
+void Model3D::setActive(bool active)
+{
+	for (ModelComponent* modelComp : _modelComp)
+	{
+		modelComp->_activeRendering = active;
+	}
+}
+
 void Model3D::setName(const std::string& name, const unsigned int compIndex)
 {
 	if (compIndex >= _modelComp.size())

@@ -169,11 +169,11 @@ void BRDFScene::loadCameras()
 		this->loadDefaultCamera(camera);
 	}
 
-	//camera->setPosition(vec3(1.70015f, 1.45277f, 0.683818f));
-	//camera->setLookAt(vec3(-6.92137f, -2.67601f, -2.16847f));
+	camera->setPosition(vec3(1.70015f, 1.45277f, 0.683818f));
+	camera->setLookAt(vec3(-6.92137f, -2.67601f, -2.16847f));
 
-	camera->setPosition(vec3(1.72121f, 0.902009f, -0.154246f));
-	camera->setLookAt(vec3(-7.45128f, -2.93413f, 0.659658f));
+	//camera->setPosition(vec3(1.72121f, 0.902009f, -0.154246f));
+	//camera->setLookAt(vec3(-7.45128f, -2.93413f, 0.659658f));
 
 	_cameraManager->insertCamera(camera);
 }
@@ -195,7 +195,7 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(1.5f, 1.5f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
+		_plane = new PlanarSurface(10.0f, 10.0f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
 		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
 		_plane->setName("Planar Surface", 0);
 		_sceneGroup->addComponent(_plane);
@@ -203,10 +203,12 @@ void BRDFScene::loadModels()
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
 		_brdfSphere->setName("BRDF Sphere", 0);
+		_brdfSphere->setActive(false);
 		_sceneGroup->addComponent(_brdfSphere);
 
 		_cadModel = new CADModel("Assets/Models/Research/Dragon", "", true);
 		_cadModel->setName("3D Model", 0);
+
 		_sceneGroup->addComponent(_cadModel);
 
 		//_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);

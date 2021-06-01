@@ -367,6 +367,11 @@ public:
 	// -------------- Setters ------------------
 
 	/**
+	*	@brief Enables or disables the rendering of a complete model.
+	*/
+	void setActive(bool active);
+
+	/**
 	*	@brief Modifies the name which identifies the model component at compIndex.
 	*/
 	void setName(const std::string& name, const unsigned int compIndex);
