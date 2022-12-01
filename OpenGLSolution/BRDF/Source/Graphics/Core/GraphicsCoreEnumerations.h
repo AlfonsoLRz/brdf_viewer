@@ -28,13 +28,7 @@ struct RendEnum
 		VBO_NORMAL,
 		VBO_TEXT_COORD,
 		VBO_TANGENT,
-		VBO_OFFSET,
-		VBO_SCALE,
-		VBO_ROTATION,
-		VBO_COLOR_TEXT_COORD_X,
-		VBO_RETURN_NUMBER,
-		VBO_RETURN_DIVISION,
-		VBO_INTENSITY
+		VBO_BSDF_REFLECTANCE,
 	};
 
 	/**
@@ -45,7 +39,7 @@ struct RendEnum
 	/**
 	*	@return Number of VBO different types.
 	*/
-	const static GLsizei numVBOTypes() { return VBO_INTENSITY + 1; }
+	const static GLsizei numVBOTypes() { return VBO_BSDF_REFLECTANCE + 1; }
 
 	/// [Shaders]
 

@@ -53,5 +53,10 @@ public:
 	*	@brief Deleted assignment operator overriding.
 	*/
 	BRDFSphere& operator=(const BRDFSphere& plane) = delete;
+
+	/**
+	*	@brief 
+	*/
+	void updateReflectance(std::vector<float>& reflectance);
 };
 

@@ -262,6 +262,7 @@ Model3D::ModelComponent* Primitives::getSemisphereModelComp(const unsigned secto
 			vertexData._normal = normal;
 			vertexData._textCoord = textCoord;
 			vertexData._tangent = vec3(-sin(sectorAngle), .0f, -cos(sectorAngle));
+			vertexData._bsdf = 1.0f;
 
 			geometry.push_back(vertexData);
 		}

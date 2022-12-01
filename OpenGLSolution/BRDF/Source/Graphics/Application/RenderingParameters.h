@@ -27,11 +27,13 @@ public:
 	float							_materialScattering;					//!< Ambient light substitute
 
 	// BRDF
-	int								_brdfType;								//!< Type of BRDF that adopt the sphere
+	int								_bsdfType, _brdfType;					//!< Type of BRDF that adopt the sphere
+	float							_bsdfWavelength;						//!<
 	float							_heightTextureScale;					//!<
 	vec3							_L, _V;									//!<
 	vec3							_lightColor, _viewColor;				//!<
 	bool							_renderBRDFVectors;						//!<
+	bool							_useBSDFDatabase;						//!<
 	float							_vectorScale;							//!<
 
 	// Screenshot
@@ -73,6 +75,8 @@ public:
 
 		_materialScattering(1.5f),
 
+		_bsdfWavelength(500),
+		_bsdfType(0),
 		_brdfType(Model3D::IDEAL_DIFFUSE),
 		_heightTextureScale(1.0f),
 		_L(glm::normalize(vec3(-1.0f, 1.0f, .0f))),
@@ -81,6 +85,7 @@ public:
 		_viewColor(vec3(1.0f, .0f, .0f)),
 		_renderBRDFVectors(true),
 		_vectorScale(2.0f),
+		_useBSDFDatabase(false),
 
 		_screenshotFilenameBuffer("Screenshot.png"),
 		_screenshotMultiplier(1.0f),

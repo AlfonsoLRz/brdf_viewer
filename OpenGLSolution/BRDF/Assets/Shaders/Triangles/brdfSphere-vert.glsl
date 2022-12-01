@@ -6,6 +6,7 @@ layout(location = 0) in vec3 vPosition;
 layout(location = 1) in vec3 vNormal;
 layout(location = 2) in vec2 vTextCoord;
 layout(location = 3) in vec3 vTangent;
+layout(location = 4) in float vBSDF;
 
 // Lighting
 uniform vec3 lightPosition;

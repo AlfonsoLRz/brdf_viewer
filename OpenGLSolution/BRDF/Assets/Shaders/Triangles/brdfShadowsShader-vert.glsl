@@ -7,6 +7,7 @@
 
 layout(location = 0) in vec3 vPosition;
 layout(location = 3) in vec3 vTangent;
+layout(location = 4) in float vBSDF;
 
 subroutine vec3 brdfType(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y);
 subroutine uniform brdfType brdfUniform;
@@ -19,6 +20,12 @@ uniform vec3 viewDirection;
 uniform mat4 mModelViewProj;
 
 INCLUDE BRDF
+
+subroutine(brdfType)
+vec3 BSDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+	return N * vBSDF;
+}
 
 subroutine(brdfType)
 vec3 noBRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)

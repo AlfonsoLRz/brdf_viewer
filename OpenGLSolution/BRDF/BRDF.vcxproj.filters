@@ -250,6 +250,12 @@
     <Filter Include="Archivos de recursos\Shaders\Geometry">
       <UniqueIdentifier>{efd82ef6-0b6e-49eb-9678-bb81266db923}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\ImportedLibraries\bsdf">
+      <UniqueIdentifier>{38fcd834-c417-4de4-99df-936c3afe6605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\ImportedLibraries\bsdf">
+      <UniqueIdentifier>{bb0219d7-9ba2-4715-9fa2-343f1ef58ae9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Geometry\2D\Vector2.h">
@@ -510,6 +516,12 @@
     <ClInclude Include="Source\Graphics\Core\PGLLPointCloud.h">
       <Filter>Archivos de encabezado\Graphics\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Core\BRDFDatabase.h">
+      <Filter>Archivos de encabezado\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\bsdf\powitacq.h">
+      <Filter>Archivos de encabezado\ImportedLibraries\bsdf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Geometry\2D\Vector2.cpp">
@@ -732,6 +744,9 @@
       <Filter>Archivos de origen\Graphics\Core\Shader</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Core\PGLLPointCloud.cpp">
+      <Filter>Archivos de origen\Graphics\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Core\BRDFDatabase.cpp">
       <Filter>Archivos de origen\Graphics\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -969,6 +984,9 @@
     </None>
     <None Include="Assets\Shaders\Geometry\brdfVectors-vert.glsl">
       <Filter>Archivos de recursos\Shaders\Geometry</Filter>
+    </None>
+    <None Include="Libraries\bsdf\powitacq.inl">
+      <Filter>Archivos de origen\ImportedLibraries\bsdf</Filter>
     </None>
   </ItemGroup>
 </Project>

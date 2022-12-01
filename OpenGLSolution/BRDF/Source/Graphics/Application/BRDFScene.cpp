@@ -11,14 +11,14 @@
 /// Initialization of static attributes
 const std::string BRDFScene::SCENE_SETTINGS_FOLDER = "Assets/Scene/Settings/BRDF/";
 
-const std::string BRDFScene::BRDF_FILE = "Assets/PGLL/m0_sincos.txt";
+const std::string BRDFScene::BRDF_MATERIAL_DB_FOLDER = "D:/Github/ScannerSimulator/ScannerSimulator/Assets/BRDF/brdfs_rgl_18/";
 const std::string BRDFScene::SCENE_CAMERA_FILE = "Camera.txt";
 const std::string BRDFScene::SCENE_LIGHTS_FILE = "Lights.txt";
 
 // [Public methods]
 
 BRDFScene::BRDFScene() :
-	_brdfSphere(nullptr), _plane(nullptr), _pgllPointCloud(nullptr), _vectorsVAO(nullptr),
+	_brdfSphere(nullptr), _plane(nullptr), _vectorsVAO(nullptr),
 	_brdfPointCloudShader(nullptr), _brdfTriangleMeshShader(nullptr), _brdfTriangleMeshNormalShader(nullptr), _brdfTriangleMeshPositionShader(nullptr),
 	_brdfShadowsShader(nullptr), _brdfWireframeShader(nullptr)
 {
@@ -37,7 +37,6 @@ BRDFScene::BRDFScene() :
 
 BRDFScene::~BRDFScene()
 {
-	delete _pgllPointCloud;
 	delete _vectorsVAO;
 	
 	delete _brdfPointCloudShader;
@@ -89,6 +88,15 @@ void BRDFScene::updateBRDF(Model3D::BRDFType newBRDF)
 
 	_brdfWireframeShader = new BRDFShader();
 	_brdfWireframeShader->createShaderProgram("Assets/Shaders/Lines/brdfWireframe", newBRDF);
+}
+
+void BRDFScene::updateBSDF(RenderingParameters* rendParams, bool updateMaterial)
+{
+	std::vector<float> reflectance;
+
+	if (updateMaterial) _brdfDatabase->loadMaterial(rendParams->_bsdfType, rendParams->_L);
+	_brdfDatabase->lookUpMaterial(rendParams->_bsdfWavelength, reflectance);
+	_brdfSphere->updateReflectance(reflectance);
 }
 
 Model3D::BRDFType* BRDFScene::getSphereBRDF()
@@ -195,24 +203,24 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(10.0f, 10.0f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
-		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
-		_plane->setName("Planar Surface", 0);
-		_sceneGroup->addComponent(_plane);
+		//_plane = new PlanarSurface(5.0f, 5.0f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
+		//_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
+		//_plane->setName("Planar Surface", 0);
+		//_sceneGroup->addComponent(_plane);
 
 		_brdfSphere = new BRDFSphere();
 		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
 		_brdfSphere->setName("BRDF Sphere", 0);
-		_brdfSphere->setActive(false);
+		_brdfSphere->setActive(true);
 		_sceneGroup->addComponent(_brdfSphere);
 
 		_cadModel = new CADModel("Assets/Models/Research/Dragon", "", true);
 		_cadModel->setName("3D Model", 0);
+		_cadModel->setActive(false);
 
 		_sceneGroup->addComponent(_cadModel);
 
-		//_pgllPointCloud = new PGLLPointCloud(BRDF_FILE, true);
-		//_sceneGroup->addComponent(_pgllPointCloud);
+		_brdfDatabase = new BRDFDatabase(BRDF_MATERIAL_DB_FOLDER);
 	}
 
 	SSAOScene::loadModels();
@@ -478,6 +486,7 @@ void BRDFScene::drawAsTriangles(Camera* camera, const mat4& mModel, RenderingPar
 				_brdfTriangleMeshShader->setUniform("altColor", rendParams->_textureReplacementColor);
 			}
 
+			_brdfTriangleMeshShader->setSubroutineUniform(GL_VERTEX_SHADER, "vertexModifierUniform", "bsdfModifier");
 			_sceneGroup->drawAsTriangles(_brdfTriangleMeshShader, RendEnum::TRIANGLE_MESH_SHADER, matrix);
 		}
 	}

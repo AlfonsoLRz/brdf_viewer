@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libraries\bsdf\powitacq.h" />
     <ClInclude Include="Libraries\imgui\examples\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\imgui\examples\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imconfig.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="Source\Graphics\Application\TextureList.h" />
     <ClInclude Include="Source\Graphics\Core\AmbientLight.h" />
     <ClInclude Include="Source\Graphics\Core\BasicAttenuation.h" />
+    <ClInclude Include="Source\Graphics\Core\BRDFDatabase.h" />
     <ClInclude Include="Source\Graphics\Core\BRDFShader.h" />
     <ClInclude Include="Source\Graphics\Core\BRDFSphere.h" />
     <ClInclude Include="Source\Graphics\Core\CADModel.h" />
@@ -200,6 +202,7 @@
     <ClCompile Include="Source\Graphics\Application\TextureList.cpp" />
     <ClCompile Include="Source\Graphics\Core\AmbientLight.cpp" />
     <ClCompile Include="Source\Graphics\Core\BasicAttenuation.cpp" />
+    <ClCompile Include="Source\Graphics\Core\BRDFDatabase.cpp" />
     <ClCompile Include="Source\Graphics\Core\BRDFShader.cpp" />
     <ClCompile Include="Source\Graphics\Core\BRDFSphere.cpp" />
     <ClCompile Include="Source\Graphics\Core\CADModel.cpp" />
@@ -326,6 +329,7 @@
     <None Include="Assets\Shaders\Triangles\brdfTriangleMeshPosition-vert.glsl" />
     <None Include="Assets\Shaders\Triangles\uniformTriangleMesh-frag.glsl" />
     <None Include="Assets\Shaders\Triangles\uniformTriangleMesh-vert.glsl" />
+    <None Include="Libraries\bsdf\powitacq.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

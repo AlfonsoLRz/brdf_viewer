@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Application/SSAOScene.h"
+#include "Graphics/Core/BRDFDatabase.h"
 #include "Graphics/Core/BRDFShader.h"
 #include "Graphics/Core/BRDFSphere.h"
 #include "Graphics/Core/CADModel.h"
@@ -43,15 +44,15 @@ protected:
 	const static std::string SCENE_SETTINGS_FOLDER;			//!<	
 
 	// Storage path
-	const static std::string BRDF_FILE;
+	const static std::string BRDF_MATERIAL_DB_FOLDER;		//!<
 	const static std::string SCENE_CAMERA_FILE;				//!<
 	const static std::string SCENE_LIGHTS_FILE;				//!<
 
 protected:
 	// Models
+	BRDFDatabase*		_brdfDatabase;							//!<
 	BRDFSphere*			_brdfSphere;							//!<
 	CADModel*			_cadModel;								//!<	
-	PGLLPointCloud*		_pgllPointCloud;						//!<
 	PlanarSurface*		_plane;									//!<
 	VAO*				_vectorsVAO;							//!<
 
@@ -181,6 +182,11 @@ public:
 	virtual ~BRDFScene();
 
 	/**
+	*	@return Database of Internet BRDFs.
+	*/
+	BRDFDatabase* getBRDFDatabase() { return _brdfDatabase; }
+
+	/**
 	*	@brief Draws the scene as the rendering parameters specifies.
 	*	@param mModel Additional model matrix to be applied over the initial model matrix.
 	*	@param rendParams Rendering parameters to be taken into account.
@@ -191,6 +197,11 @@ public:
 	*	@brief 
 	*/
 	void updateBRDF(Model3D::BRDFType newBRDF);
+
+	/**
+	*	@brief 
+	*/
+	void updateBSDF(RenderingParameters* rendParams, bool updateMaterial);
 
 	// ------- Getters --------
 

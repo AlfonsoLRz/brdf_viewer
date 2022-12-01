@@ -69,21 +69,6 @@ public:
 	VAO& operator=(const VAO& orig) = delete;
 
 	/**
-	*	@brief Defines a VBO for a position buffer.
-	*/
-	void defineOffsetVBO();
-
-	/**
-	*	@brief Defines a VBO for a rotation buffer.
-	*/
-	void defineRotationVBO();
-
-	/**
-	*	@brief Defines a VBO for an scale buffer.
-	*/
-	void defineScaleVBO();
-
-	/**
 	*	@brief Draws an object with an specific topology.
 	*	@param type IBO que debemos utilizar para dibujar el objeto.
 	*	@param openGLPrimitive Primitiva que usaremos al dibujar: GL_POINTS, GL_TRIANGLE_STRIP...

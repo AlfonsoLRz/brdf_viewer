@@ -16,7 +16,7 @@
 // [Static variables initialization]
 
 const std::string Model3D::NO_BRDF_UNIFORM = "noBRDF";
-const std::string Model3D::BRDF_UNIFORM = "BRDF";
+const std::string Model3D::BRDF_UNIFORM = "BSDF";
 const std::string Model3D::BRDF_UNIFORM_NAME = "brdfUniform";
 const GLuint Model3D::RESTART_PRIMITIVE_INDEX	= 0xFFFFFFFF;
 
@@ -388,7 +388,7 @@ void Model3D::generateWireframe()
 	}
 }
 
-void Model3D::setBRDFUniform(ShaderProgram* shader, const const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent)
+void Model3D::setBRDFUniform(ShaderProgram* shader, const RendEnum::RendShaderTypes shaderType, ModelComponent* modelComponent)
 {
 	if (modelComponent->_brdf == BRDFType::NONE)
 	{

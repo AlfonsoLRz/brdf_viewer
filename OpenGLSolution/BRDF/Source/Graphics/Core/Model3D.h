@@ -44,7 +44,7 @@ public:
 		vec2		_padding3;
 
 		vec3		_tangent;
-		float		_padding4;
+		float		_bsdf;
 	};
 
 	/**
@@ -169,7 +169,7 @@ public:
 
 public:
 	enum BRDFType {
-		NONE, IDEAL_DIFFUSE, OREN_NAYAR, PHONG, COOK_TORRANCE, MINNAERT, WARD_ANISOTROPIC, NUM_BRDF_TYPES
+		NONE, IDEAL_DIFFUSE, OREN_NAYAR, PHONG, COOK_TORRANCE, MINNAERT, WARD_ANISOTROPIC, BSDF, NUM_BRDF_TYPES
 	};
 
 	// [BRDF]

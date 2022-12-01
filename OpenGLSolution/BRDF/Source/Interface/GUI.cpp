@@ -18,12 +18,6 @@ GUI::GUI() :
 	_sceneComponents	= _brdfScene->getSceneComponents();
 	_sphereBRDF			= _brdfScene->getSphereBRDF();
 	_brdfParameters		= BRDFShader::getParameters(*_sphereBRDF);
-
-	//for (int nodeIdx = 0; nodeIdx < ForestEditorNode::NUM_NODE_TYPES; ++nodeIdx)
-	//{
-	//	_forestNode.push_back(nullptr);
-	//}
-	//_forestNode[ForestEditorNode::SCENE_ROOT] = new ForestEditorNode(ForestEditorNode::SCENE_ROOT);
 }
 
 void GUI::addForestNode(const int id, const ImVec2& position)
@@ -273,11 +267,38 @@ void GUI::showRenderingSettings()
 				this->leaveSpace(1);
 
 				ImGui::PushItemWidth(200.0f);
-				if (ImGui::Combo("Visualization", &currentBRDF, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR)))
+				if (ImGui::Combo("BRDF Shader", &currentBRDF, RenderingParameters::BRDF_STR, IM_ARRAYSIZE(RenderingParameters::BRDF_STR)))
 				{
 					_brdfScene->updateBRDF(static_cast<Model3D::BRDFType>(currentBRDF));
 					_brdfParameters = BRDFShader::getParameters(*_sphereBRDF);
 				}
+
+				std::vector<std::string>* materialNames = _brdfScene->getBRDFDatabase()->getMaterialNames();
+				std::vector<const char*> ptrs;
+				for (std::string const& str : *materialNames) {
+					ptrs.push_back(str.data());
+				}
+
+				if (ImGui::Combo("BSDF Goniometer", &_renderingParams->_bsdfType, ptrs.data(), ptrs.size()))
+				{
+					_brdfScene->updateBSDF(_renderingParams, true);
+				}
+
+				ImGui::SameLine(0, 20);
+				if (ImGui::Button("Refresh BSDF"))
+				{
+					_brdfScene->updateBSDF(_renderingParams, false);
+				}
+
+				ImGui::SameLine(0, 20);
+				if (ImGui::Button("Reload BSDF"))
+				{
+					_brdfScene->updateBSDF(_renderingParams, true);
+				}
+
+				ImGui::SameLine(0, 20);
+				ImGui::Checkbox("Use BSDF", &_renderingParams->_useBSDFDatabase);
+
 				ImGui::PopItemWidth();
 
 				ImGui::Separator();
@@ -294,6 +315,9 @@ void GUI::showRenderingSettings()
 
 				ImGui::PushItemWidth(300.0f);
 				ImGui::SliderFloat("BRDF Sphere Texture Height", &_renderingParams->_heightTextureScale, .1f, 20.0f);
+
+				vec2 wlLimits = _brdfScene->getBRDFDatabase()->getWavelengthLimits();
+				ImGui::SliderFloat("BSDF Wavelength", &_renderingParams->_bsdfWavelength, wlLimits.x, wlLimits.y);
 				ImGui::PopItemWidth();
 
 				this->leaveSpace(2);

@@ -17,10 +17,13 @@ VAO::VAO(bool gpuGeometry): _vao(-1), _vbo(RendEnum::numVBOTypes()), _ibo(RendEn
 		this->declareSimpleVBO(RendEnum::VBO_NORMAL, sizeof(vec3), GL_FLOAT, _vboIndex);
 		this->declareSimpleVBO(RendEnum::VBO_TEXT_COORD, sizeof(vec2), GL_FLOAT, _vboIndex);
 		this->declareSimpleVBO(RendEnum::VBO_TANGENT, sizeof(vec3), GL_FLOAT, _vboIndex);
+		this->declareSimpleVBO(RendEnum::VBO_BSDF_REFLECTANCE, sizeof(float), GL_FLOAT, _vboIndex);
 	}
 	else
 	{
+		//_vboIndex += 4;
 		this->genGPUGeometryVBO();
+		//this->declareSimpleVBO(RendEnum::VBO_BSDF_REFLECTANCE, sizeof(float), GL_FLOAT, _vboIndex);
 	}
 
 	// [IBO]
@@ -32,50 +35,6 @@ VAO::~VAO()
 	glDeleteBuffers(RendEnum::numVBOTypes(), _vbo.data());
 	glDeleteBuffers(RendEnum::numIBOTypes(), _ibo.data());
 	glDeleteVertexArrays(1, &_vao);
-}
-
-void VAO::defineOffsetVBO()
-{
-	glBindVertexArray(_vao);
-
-	// VBOs
-	glGenBuffers(1, &_vbo[RendEnum::VBO_OFFSET]);
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo[RendEnum::VBO_OFFSET]);
-
-	// Offset
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, sizeof(vec4) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, sizeof(vec4), (GLubyte*)nullptr);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(4, 1);
-}
-
-void VAO::defineRotationVBO()
-{
-	glBindVertexArray(_vao);
-
-	// Rotation 
-	glGenBuffers(1, &_vbo[RendEnum::VBO_ROTATION]);
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo[RendEnum::VBO_ROTATION]);
-
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, sizeof(vec4) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, sizeof(vec4), (GLubyte*)nullptr);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(6, 1);
-}
-
-void VAO::defineScaleVBO()
-{
-	glBindVertexArray(_vao);
-
-	// VBOs
-	glGenBuffers(1, &_vbo[RendEnum::VBO_SCALE]);
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo[RendEnum::VBO_SCALE]);
-
-	// Scale as a float (uniform)
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, sizeof(vec4) / sizeof(GL_FLOAT), GL_FLOAT, GL_FALSE, sizeof(vec4), (GLubyte*)nullptr);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(5, 1);
 }
 
 void VAO::drawObject(const RendEnum::IBOTypes iboType, const GLuint openGLPrimitive, const GLuint numIndices)
@@ -167,23 +126,24 @@ void VAO::genGPUGeometryVBO()
 
 	// VBOs
 	glGenBuffers(1, &_vbo[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo[RendEnum::VBO_POSITION]);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, ((GLubyte*)nullptr));
-	accumSize += sizeof(vec4);
+	glVertexAttribPointer(0, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, (GLubyte*)offsetof(Model3D::VertexGPUData, _position));
 
 	// Normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, ((GLubyte*)nullptr + accumSize));
-	accumSize += sizeof(vec4);
+	glVertexAttribPointer(1, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, (GLubyte*)offsetof(Model3D::VertexGPUData, _normal));
 
 	// Texture coordinates
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, sizeof(vec2) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, ((GLubyte*)nullptr + accumSize));
-	accumSize += sizeof(vec4);
+	glVertexAttribPointer(2, sizeof(vec2) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, (GLubyte*)offsetof(Model3D::VertexGPUData, _textCoord));
 
 	// Tangents
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, ((GLubyte*)nullptr + accumSize));
+	glVertexAttribPointer(3, sizeof(vec3) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, (GLubyte*)offsetof(Model3D::VertexGPUData, _tangent));
+
+	// Reflectance
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, sizeof(GLfloat) / sizeof(GLfloat), GL_FLOAT, GL_FALSE, structSize, (GLubyte*)offsetof(Model3D::VertexGPUData, _bsdf));
 }

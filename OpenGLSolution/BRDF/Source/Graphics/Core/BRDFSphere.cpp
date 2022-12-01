@@ -6,8 +6,8 @@
 
 // [Initialization of static attributes
 
-const unsigned BRDFSphere::SECTORS = 360 * 3;
-const unsigned BRDFSphere::STACKS = 90 * 3;
+const unsigned BRDFSphere::SECTORS = 360 * 1;
+const unsigned BRDFSphere::STACKS = 90 * 1;
 
 // [Public methods]
 
@@ -38,6 +38,16 @@ bool BRDFSphere::load(const mat4& modelMatrix)
 	}
 
 	return false;
+}
+
+void BRDFSphere::updateReflectance(std::vector<float>& reflectance)
+{
+	for (int vertexId = 0; vertexId < reflectance.size(); ++vertexId)
+	{
+		_modelComp[0]->_geometry[vertexId]._bsdf = reflectance[vertexId];
+	}
+
+	_modelComp[0]->_vao->setVBOData(_modelComp[0]->_geometry, GL_DYNAMIC_DRAW);
 }
 
 // [Protected methods]
