@@ -1,0 +1,51 @@
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin parameters
+float Alpha_x 0.0 2.0 .5
+float Alpha_y 0.0 2.0 .5
+float ClampSqrt 0.000001 0.1 0.001
+::end parameters
+
+::begin reflectanceShader
+
+vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+	const vec3 h            = normalize(L + V);
+	const vec3 binormal     = normalize(cross(X, N));	
+    const float dotLN       = dot(L, N);
+	const float dotNV       = dot(N, V);
+	const float dotHX       = dot(h, X);
+	const float dotHY       = dot(h, binormal);	
+    const float dotHN       = dot(h, N);
+	    
+	const vec2 alphaTerm	= vec2(dotHX / Alpha_x, dotHY / Alpha_y);
+	const float expFactor	= -1.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (SQUARE(dotHN)));
+	const float specFactor	= (1.0f / (4.0f * PI * Alpha_x * Alpha_y * sqrt(max(dotLN * dotNV, ClampSqrt)))) * exp(expFactor);
+
+	return N * max(specFactor, 1.0f / PI);
+}
+
+::end reflectanceShader
+
+::begin renderingShader
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
+{
+	const vec3 h            = normalize(L + V);
+	const vec3 binormal     = normalize(cross(X, N));	
+    const float dotLN       = dot(L, N);
+	const float dotNV       = dot(N, V);
+	const float dotHX       = dot(h, X);
+	const float dotHY       = dot(h, binormal);	
+    const float dotHN       = dot(h, N);
+	    
+	const vec2 alphaTerm	= vec2(dotHX / Alpha_x, dotHY / Alpha_y);
+	const float expFactor	= -1.0f * ((SQUARE(alphaTerm.x) + SQUARE(alphaTerm.y)) / (SQUARE(dotHN)));
+	const float specFactor	= (1.0f / (4.0f * PI * Alpha_x * Alpha_y * sqrt(max(dotLN * dotNV, ClampSqrt)))) * exp(expFactor);
+
+    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f) + Is * ks * specFactor;
+}
+
+::end renderingShader

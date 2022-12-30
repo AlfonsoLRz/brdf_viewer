@@ -1,0 +1,19 @@
+!
+LightType 		DIRECTIONAL_LIGHT
+LightPosition 		15.16 23.72 5.0
+LightDirection 		0.0 -1.0 0.4
+DiffuseIntensity 	1.2 1.2 1.2
+SpecularIntensity 	0.3 0.3 0.3
+CastShadows		true
+OrthoBottomLeftCorner	-10.0 -15.0
+ShadowMapSize		4096 4096
+ShadowIntensity		0.7 1.0
+ShadowRadius		0.004
+!
+LightType 		DIRECTIONAL_LIGHT
+LightDirection 		1.0 1.0 0.0
+DiffuseIntensity 	0.4 0.4 0.4
+SpecularIntensity 	0.0 0.0 0.0
+!
+LightType 		RIM_LIGHT
+AmbientIntensity	0.015 0.015 0.05

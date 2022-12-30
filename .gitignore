@@ -117,9 +117,9 @@ dmypy.json
 *.obj
 *.bin
 *.ply
+*.png
 OpenGLSolution/BRDF/Assets/Scene/*
 !OpenGLSolution/BRDF/Assets/Scene/Settings/
-
 
 # Prerequisites
 *.d

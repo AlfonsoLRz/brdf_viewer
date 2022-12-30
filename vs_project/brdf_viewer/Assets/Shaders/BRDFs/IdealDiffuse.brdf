@@ -1,0 +1,27 @@
+# variables go here...
+# only floats supported right now.
+# [type] [name] [min val] [max val] [default val]
+
+::begin parameters
+bool Normalized 1
+::end parameters
+
+::begin reflectanceShader
+
+vec3 BRDF(vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y)
+{
+    return N / (float(Normalized) * PI + (1.0f - float(Normalized)));
+}
+
+::end reflectanceShader
+
+::begin renderingShader
+
+vec3 BRDF( vec3 kad, vec3 ks, float shadowDiffuse, float shadowSpecular, vec3 L, vec3 N, vec3 V, vec3 X, vec3 Y )
+{
+    float dotLN = dot(L, N);
+
+    return shadowDiffuse * Id * kad * max((dotLN + materialScattering) / (1 + materialScattering), 0.0f);
+}
+
+::end renderingShader
