@@ -195,18 +195,18 @@ void BRDFScene::loadModels()
 
 		_sceneGroup = new Group3D();
 
-		_plane = new PlanarSurface(10.0f, 10.0f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
-		_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
-		_plane->setName("Planar Surface", 0);
-		_sceneGroup->addComponent(_plane);
+		//_plane = new PlanarSurface(10.0f, 10.0f, 10, 10, 1.0f, 1.0f, glm::rotate(mat4(1.0f), glm::pi<float>() / 2.0f, vec3(.0f, 1.0f, .0f)));
+		//_plane->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
+		//_plane->setName("Planar Surface", 0);
+		//_sceneGroup->addComponent(_plane);
 
 		_brdfSphere = new BRDFSphere();
-		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_HEIGHT));
+		_brdfSphere->setMaterial(materialList->getMaterial(CGAppEnum::MATERIAL_CHECKER));
 		_brdfSphere->setName("BRDF Sphere", 0);
 		_brdfSphere->setActive(false);
 		_sceneGroup->addComponent(_brdfSphere);
 
-		_cadModel = new CADModel("Assets/Models/Research/Dragon", "", true);
+		_cadModel = new CADModel("Assets/Models/Laocoon", "", true);
 		_cadModel->setName("3D Model", 0);
 
 		_sceneGroup->addComponent(_cadModel);

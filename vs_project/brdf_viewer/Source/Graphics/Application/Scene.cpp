@@ -259,7 +259,7 @@ void Scene::drawSceneAsTriangles4Position(RenderingShader* shader, RendEnum::Ren
 void Scene::bindDefaultFramebuffer(RenderingParameters* rendParams)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, _nextFramebufferID);
-	glClearColor(rendParams->_backgroundColor.x, rendParams->_backgroundColor.y, rendParams->_backgroundColor.z, 1.0f);
+	glClearColor(rendParams->_backgroundColor.x, rendParams->_backgroundColor.y, rendParams->_backgroundColor.z, static_cast<float>(_nextFramebufferID == 0));
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

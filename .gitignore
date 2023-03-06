@@ -118,6 +118,7 @@ dmypy.json
 *.bin
 *.ply
 *.png
+*.mtl
 !md_assets/*.png
 OpenGLSolution/BRDF/Assets/Scene/*
 !OpenGLSolution/BRDF/Assets/Scene/Settings/
@@ -155,7 +156,15 @@ OpenGLSolution/BRDF/Assets/Scene/*
 *.app
 
 # Visual Studio	
-OpenGLSolution/.vs/*
-OpenGLSolution/Debug/*
-OpenGLSolution/Release/*
-OpenGLSolution/BRDF/x64/*
+vs_project/.vs/*
+vs_project/Debug/*
+vs_project/Release/*
+vs_project/BRDF/x64/*
+*.ipch
+*.tlog
+*.idb
+*.ipdb
+*.iobj
+*.pdb
+*.exp
+*.ilk
