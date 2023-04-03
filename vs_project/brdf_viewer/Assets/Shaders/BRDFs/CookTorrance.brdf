@@ -1,5 +1,3 @@
-analytic
-
 # variables go here...
 # only floats supported right now.
 # [type] [name] [min val] [max val] [default val]
