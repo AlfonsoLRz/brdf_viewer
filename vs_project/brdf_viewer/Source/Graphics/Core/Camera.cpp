@@ -325,8 +325,6 @@ void Camera::computeViewMatrices()
 
 glm::mat4 Camera::computeViewMatrix()
 {
-	std::cout << "Position: " << _eye.x << ", " << _eye.y << ", " << _eye.z << "; look at: " << _lookAt.x << ", " << _lookAt.y << ", " << _lookAt.z << std::endl;
-
 	return glm::lookAt(_eye, _lookAt, _up);
 }
 
